@@ -1,0 +1,12 @@
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\bin\Debug\net6.0\Infrastructure.Service.deps.json
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\bin\Debug\net6.0\Infrastructure.Service.dll
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\bin\Debug\net6.0\Infrastructure.Service.pdb
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.csproj.AssemblyReference.cache
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.AssemblyInfoInputs.cache
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.AssemblyInfo.cs
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.csproj.CoreCompileInputs.cache
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.dll
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\refint\Infrastructure.Service.dll
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\Infrastructure.Service.pdb
+C:\Users\vitor\source\repos\HomeEasy\Infrastructure.Service\obj\Debug\net6.0\ref\Infrastructure.Service.dll
