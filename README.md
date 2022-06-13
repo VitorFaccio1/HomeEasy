@@ -12,7 +12,7 @@
 
 ### User
 
-#### - Add User Async v1.
+#### -Add User Async v1.
 
 - [ *POST* /api/homeeasy/v1/user ]
 
@@ -32,7 +32,7 @@
 		{}
 		```
 
-#### - Get Users Async v1.
+#### -Get Users Async v1.
 
 - [ *GET* /api/homeeasy/v1/users ]
 
