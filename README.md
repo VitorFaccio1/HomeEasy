@@ -5,8 +5,8 @@
 * [Guidelines](#**guidelines**)
 * [Controllers](#**controllers**)
     * [User](#user)
-        * [Add User Async v1.](#--add-user-async-v1.)
-        * [Get Users Async v1.](#--get-users-async-v1.)
+        * [Add User Async v1.](#add-user-async-v1.)
+        * [Get Users Async v1.](#get-users-async-v1.)
 
 ## **Controllers**
 
