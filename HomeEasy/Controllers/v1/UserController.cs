@@ -49,7 +49,7 @@ namespace HomeEasy.Controllers.v1
             return await GetActionResultAsync(new GetUsersQuery());
         }
 
-        private async Task<IActionResult> GetActionResultAsync(object request, FluentValidation.Results.ValidationResult? validatorErrors = null)
+        public async Task<IActionResult> GetActionResultAsync(object request, FluentValidation.Results.ValidationResult? validatorErrors = null)
         {
             try
             {
