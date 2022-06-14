@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8NgqvoMe9zuZE1q4b71O9gnvx5SwdYrJ7qT/J5gzEQRT8vUzqwY2S/A5XXX+6FBlmWk1pYu9exko0IlryE45KQ==",
+  "dgSpecHash": "WoMdPF+86POcXff+I6p/AuNJiwWOjGDwekMmyvMusHvW+/MY7UgUfnJUiiHtblndQFio3lAermQZk5WSWeQJBQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\Domain.Tests\\Domain.Tests.csproj",
+  "projectFilePath": "C:\\Users\\vitor\\source\\repos\\HomeEasy\\Domain.Tests\\Domain.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vitor\\.nuget\\packages\\autofixture\\4.17.0\\autofixture.4.17.0.nupkg.sha512",
     "C:\\Users\\vitor\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<HomeEasyContext>(options =>
-    options.UseSqlServer("Server=DESKTOP-933Q7QH\\SQLEXPRESS;Database=HomeEasy;Trusted_Connection=True;MultipleActiveResultSets=true" ?? throw new InvalidOperationException("Connection string 'HomeEasyContext' not found."), b=>b.MigrationsAssembly("HomeEasy")));
+    options.UseSqlServer("Server=DESKTOP-4CN7MCF\\SQLEXPRESS;Database=HomeEasy;Trusted_Connection=True;MultipleActiveResultSets=true" ?? throw new InvalidOperationException("Connection string 'HomeEasyContext' not found."), b=>b.MigrationsAssembly("HomeEasy")));
 
 // Add services to the container.
 

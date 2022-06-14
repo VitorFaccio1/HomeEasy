@@ -1,7 +1,9 @@
-﻿using HomeEasy.Domain.Commands.v1.User.AddUser;
+﻿using CrossCutting.Exceptions;
+using HomeEasy.Domain.Commands.v1.User.AddUser;
 using HomeEasy.Domain.Queries.v1.User.GetUsers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HomeEasy.Controllers.v1
 {
@@ -12,7 +14,7 @@ namespace HomeEasy.Controllers.v1
         private readonly IMediator _mediator;
 
         public UserController(IMediator mediator)
-        {
+        {   
             _mediator = mediator;
         }
 
@@ -25,10 +27,13 @@ namespace HomeEasy.Controllers.v1
         /// </p>
         /// <br />
         [HttpPost("user")]
-        public async Task<Unit> AddUserAsync(AddUserCommand addUserCommand)
+        public async Task<IActionResult> AddUserAsync(AddUserCommand addUserCommand)
         {
-            return await _mediator.Send(addUserCommand);
+            var validationResult = await new AddUserCommandValidator().ValidateAsync(addUserCommand);
+
+            return await GetActionResultAsync(addUserCommand, validationResult);
         }
+
 
         /// <summary>
         /// Get users async v1.
@@ -39,9 +44,39 @@ namespace HomeEasy.Controllers.v1
         /// </p>
         /// <br />
         [HttpGet("users")]
-        public async Task<List<GetUsersQueryResponse>> GetUsersAsync()
+        public async Task<IActionResult> GetUsersAsync()
         {
-            return await _mediator.Send(new GetUsersQuery());
+            return await GetActionResultAsync(new GetUsersQuery());
+        }
+
+        private async Task<IActionResult> GetActionResultAsync(object request, FluentValidation.Results.ValidationResult? validatorErrors = null)
+        {
+            try
+            {
+                if (validatorErrors == null || !validatorErrors.Errors.Any())
+                {
+                    var response = await _mediator.Send(request);
+
+                    return Ok(response);
+                }
+                else
+                {
+                    var errors = new List<string>();
+
+                    foreach (var validationError in validatorErrors.Errors)
+                        errors.Add(validationError.ErrorMessage);
+
+                    return BadRequest(errors);
+                }
+            }
+            catch (HttpCustomException ex)
+            {
+                return StatusCode((int)ex.ResponseCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.ServiceUnavailable, ex.Message);
+            }
         }
     }
 }

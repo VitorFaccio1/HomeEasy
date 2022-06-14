@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ylCTi1SFWz/rzQrkmTD0FHC5Dw/8Ua/vPN3j7DM41m7vKSLuP8OBrKnUphl38/raNSQjKfuwOoIwSfcgve5Uog==",
+  "dgSpecHash": "dbjYtUPvUm/j18FuL1A7asWFm9yPgq9yrSzZCCbp9xEjeWI4kqIbteT1bYqCtdO06mP46UE26BcHJrTudNhbSQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\HomeEasy\\HomeEasy.csproj",
+  "projectFilePath": "C:\\Users\\vitor\\source\\repos\\HomeEasy\\HomeEasy\\HomeEasy.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vitor\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\vitor\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",

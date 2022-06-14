@@ -21,7 +21,7 @@ namespace HomeEasy.Domain.Queries.v1.User.GetUsers
         {
             var users = await _userService.GetUsersAsync();
 
-            if (!users.Any())
+                if (!users.Any())
                 throw new UsersNotFoundException();
 
             var response = _mapper.Map<List<UserEntity>, List<GetUsersQueryResponse>>(users);

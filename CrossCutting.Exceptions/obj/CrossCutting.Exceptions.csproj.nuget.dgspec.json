@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj": {}
+    "C:\\Users\\vitor\\source\\repos\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj": {
+    "C:\\Users\\vitor\\source\\repos\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj",
+        "projectUniqueName": "C:\\Users\\vitor\\source\\repos\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj",
         "projectName": "CrossCutting.Exceptions",
-        "projectPath": "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj",
+        "projectPath": "C:\\Users\\vitor\\source\\repos\\HomeEasy\\CrossCutting.Exceptions\\CrossCutting.Exceptions.csproj",
         "packagesPath": "C:\\Users\\vitor\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vitor\\Source\\Repos\\VitorFaccio1\\HomeEasy\\CrossCutting.Exceptions\\obj\\",
+        "outputPath": "C:\\Users\\vitor\\Source\\Repos\\HomeEasy\\CrossCutting.Exceptions\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,7 +26,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://azuldevops.pkgs.visualstudio.com/_packaging/azulframework/nuget/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -58,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

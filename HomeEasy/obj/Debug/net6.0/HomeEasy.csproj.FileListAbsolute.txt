@@ -547,3 +547,4 @@ C:\Users\vitor\Source\Repos\VitorFaccio1\HomeEasy\HomeEasy\obj\Debug\net6.0\refi
 C:\Users\vitor\Source\Repos\VitorFaccio1\HomeEasy\HomeEasy\obj\Debug\net6.0\HomeEasy.pdb
 C:\Users\vitor\Source\Repos\VitorFaccio1\HomeEasy\HomeEasy\obj\Debug\net6.0\HomeEasy.genruntimeconfig.cache
 C:\Users\vitor\Source\Repos\VitorFaccio1\HomeEasy\HomeEasy\obj\Debug\net6.0\ref\HomeEasy.dll
+C:\Users\vitor\Source\Repos\HomeEasy\HomeEasy\obj\Debug\net6.0\HomeEasy.MvcApplicationPartsAssemblyInfo.cs
