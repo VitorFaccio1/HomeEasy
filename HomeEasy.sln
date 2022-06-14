@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Data", "Infr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - CrossCutting", "4 - CrossCutting", "{F2C9BF05-E4A2-49A9-AD06-43FF36531B9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Exceptions", "CrossCutting.Exceptions\CrossCutting.Exceptions.csproj", "{7EF81827-76ED-4BE5-AD01-15BBC25B912C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Exceptions", "CrossCutting.Exceptions\CrossCutting.Exceptions.csproj", "{7EF81827-76ED-4BE5-AD01-15BBC25B912C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.Tests", "Queries.Tests\Queries.Tests.csproj", "{8E41BE45-6006-4B84-A2B9-6B219FBE7E74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Tests", "Queries.Tests\Queries.Tests.csproj", "{8E41BE45-6006-4B84-A2B9-6B219FBE7E74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

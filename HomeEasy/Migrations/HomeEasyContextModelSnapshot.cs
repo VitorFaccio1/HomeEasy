@@ -21,7 +21,7 @@ namespace HomeEasy.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Infrastructure.Data.Entities.User.AddUser.UserEntity", b =>
+            modelBuilder.Entity("Infrastructure.Data.Entities.User.UserEntity", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

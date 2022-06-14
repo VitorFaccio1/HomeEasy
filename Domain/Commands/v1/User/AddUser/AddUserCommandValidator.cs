@@ -6,6 +6,7 @@ namespace HomeEasy.Domain.Commands.v1.User.AddUser
     {
         public AddUserCommandValidator()
         {
+
             RuleFor(x => x.Name)
                 .NotNull()
                 .NotEmpty()
