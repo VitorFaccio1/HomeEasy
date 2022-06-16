@@ -1,5 +1,9 @@
 ﻿using CrossCutting.Exceptions;
+using FluentValidation.Results;
 using HomeEasy.Domain.Commands.v1.User.AddUser;
+using HomeEasy.Domain.Commands.v1.User.DeleteUser;
+using HomeEasy.Domain.Commands.v1.User.UpdateUser;
+using HomeEasy.Domain.Queries.v1.User.GetUser;
 using HomeEasy.Domain.Queries.v1.User.GetUsers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +35,24 @@ namespace HomeEasy.Controllers.v1
         {
             var validationResult = await new AddUserCommandValidator().ValidateAsync(addUserCommand);
 
+            addUserCommand.IsActive = true;
+
             return await GetActionResultAsync(addUserCommand, validationResult);
         }
 
+        /// <summary>
+        /// Get user async v1.
+        /// </summary>
+        /// <p>
+        /// <b>Description: </b><br />
+        /// This method gets delete the user registered in the system.<br />
+        /// </p>
+        /// <br />
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetUserAsync(long id)
+        {
+            return await GetActionResultAsync(new GetUserQuery(id));
+        }
 
         /// <summary>
         /// Get users async v1.
@@ -49,7 +68,36 @@ namespace HomeEasy.Controllers.v1
             return await GetActionResultAsync(new GetUsersQuery());
         }
 
-        public async Task<IActionResult> GetActionResultAsync(object request, FluentValidation.Results.ValidationResult? validatorErrors = null)
+        /// <summary>
+        /// Delete user async v1.
+        /// </summary>
+        /// <p>
+        /// <b>Description: </b><br />
+        /// This method gets delete the user registered in the system.<br />
+        /// </p>
+        /// <br />
+        [HttpDelete("user/{id}")]
+        public async Task<IActionResult> DeleteUserAsync(long id)
+        {
+            return await GetActionResultAsync(new DeleteUserCommand(id));
+        }
+
+        /// <summary>
+        /// Update user async v1.
+        /// </summary>
+        /// <p>
+        /// <b>Description: </b><br />
+        /// This method gets updates the user registered in the system.<br />
+        /// </p>
+        /// <br />
+        [HttpPut("user/{id}")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserCommand updateUserCommand, long id)
+        {
+            updateUserCommand.Id = id;
+            return await GetActionResultAsync(updateUserCommand);
+        }
+
+        public async Task<IActionResult> GetActionResultAsync<T>(T request, ValidationResult? validatorErrors = null)
         {
             try
             {
