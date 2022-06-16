@@ -8,7 +8,8 @@ namespace HomeEasy.Domain.MapperProfiles.v1.User
     {
         public AddUserEntityProfile()
         {
-            CreateMap<AddUserCommand, UserEntity>(MemberList.None);
+            CreateMap<AddUserCommand, UserEntity>(MemberList.None)
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
         }
     }
 }

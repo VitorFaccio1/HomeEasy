@@ -18,8 +18,9 @@ namespace HomeEasy.Domain.Commands.v1.User.AddUser
 
         public async Task<Unit> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
-            await _userService.AddUserAsync(
-                _mapper.Map<AddUserCommand, UserEntity>(request));
+            var user = _mapper.Map<AddUserCommand, UserEntity>(request);
+
+            await _userService.AddUserAsync(user);
 
             return Unit.Value;
         }

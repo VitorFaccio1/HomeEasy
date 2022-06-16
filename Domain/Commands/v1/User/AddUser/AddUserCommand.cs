@@ -14,6 +14,12 @@ namespace HomeEasy.Domain.Commands.v1.User.AddUser
         public long Id { get; set; }
 
         /// <summary>
+        /// If the user is active.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsActive { get; set; }
+
+        /// <summary>
         /// The username.
         /// </summary>
         public string? Name { get; set; }
