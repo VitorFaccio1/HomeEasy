@@ -6,6 +6,10 @@ namespace Infrastructure.Data.Interfaces
     {
         Task AddUserAsync(UserEntity request);
 
-        Task<List<UserEntity>> GetUsersAsync();
+        Task<IEnumerable<UserEntity>> GetUsersAsync();
+
+        Task<UserEntity> GetUserAsync(long id);
+
+        Task UpdateUserAsync(UserEntity user);
     }
 }

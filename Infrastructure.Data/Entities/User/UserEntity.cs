@@ -21,5 +21,10 @@
         /// The user password.
         /// </summary>
         public string? Password { get; set; }
+
+        /// <summary>
+        /// If the user is active.
+        /// </summary>
+        public bool? IsActive { get; set; }
     }
 }

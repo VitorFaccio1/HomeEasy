@@ -19,9 +19,20 @@ namespace Infrastructure.Data.ServiceHandler
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<UserEntity>> GetUsersAsync()
+        public async Task<IEnumerable<UserEntity>> GetUsersAsync()
         {
             return await _context.Users.ToListAsync();
+        }
+
+        public async Task<UserEntity> GetUserAsync(long id)
+        {
+            return await _context.Users.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        }
+
+        public async Task UpdateUserAsync(UserEntity user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
     }
 }
