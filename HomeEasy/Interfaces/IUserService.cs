@@ -2,10 +2,14 @@
 
 namespace HomeEasy.Interfaces
 {
-	public interface IUserService
-	{
-		void CreateAsync(User user);
+    public interface IUserService
+    {
+        void CreateAsync(User user);
 
-		Task<User> LoginAsync(string email, string password);
-	}
+        Task<User> LoginAsync(string email, string password);
+
+        Task<List<User>> GetWorkersAsync();
+
+        Task<User> GetUserByEmailAsync(string email);
+    }
 }
