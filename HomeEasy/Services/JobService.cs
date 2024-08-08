@@ -18,4 +18,46 @@ public sealed class JobService : IJobService
     {
         return await _context.Jobs.ToListAsync();
     }
+
+    public async Task<Job> GetJobAsync(Guid? id)
+    {
+        if (id == null)
+            return null;
+        else
+            return await _context.Jobs.FindAsync(id);
+    }
+
+    public async Task CreateJobAsync(Job job)
+    {
+        if (!await JobAlreadyExists(job.Name))
+        {
+            _context.Jobs.Add(job);
+
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task RemoveJobAsync(Job job)
+    {
+        _context.Jobs.Remove(job);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateJobAsync(Job job)
+    {
+        var existingJob = await _context.Jobs.FindAsync(job.Id);
+
+        if (existingJob != null)
+        {
+            existingJob.Name = job.Name;
+
+            _context.Jobs.Update(existingJob);
+
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    private async Task<bool> JobAlreadyExists(string name) =>
+        await _context.Jobs.AnyAsync(job => job.Name.ToLower() == name.ToLower());
 }
