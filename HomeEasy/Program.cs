@@ -13,6 +13,7 @@ builder.Services.AddDbContext<HomeEasyContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAdService, AdService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
