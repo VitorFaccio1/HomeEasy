@@ -10,7 +10,7 @@ public interface IJobService
 
     Task CreateJobAsync(Job job);
 
-    Task RemoveJobAsync(Job job);
+    Task DeleteJobAsync(Job job);
 
     Task UpdateJobAsync(Job job);
 }

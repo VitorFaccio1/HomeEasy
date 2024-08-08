@@ -37,7 +37,7 @@ public sealed class JobService : IJobService
         }
     }
 
-    public async Task RemoveJobAsync(Job job)
+    public async Task DeleteJobAsync(Job job)
     {
         _context.Jobs.Remove(job);
 

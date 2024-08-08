@@ -81,7 +81,7 @@ namespace HomeEasy.Controllers
             var job = await _jobService.GetJobAsync(id);
 
             if (job != null)
-                await _jobService.RemoveJobAsync(job);
+                await _jobService.DeleteJobAsync(job);
 
             return RedirectToAction(nameof(Index));
         }
