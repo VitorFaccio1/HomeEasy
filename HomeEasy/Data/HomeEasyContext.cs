@@ -32,7 +32,8 @@ public sealed class HomeEasyContext : DbContext
 				Email = "vitor@admin.com",
 				Password = "AQAAAAIAAYagAAAAEA9Zd9k/oCFtBcUMOt94/Brh110GdKXeDqeFMwNEbxVUv2Mlv5xcn+dxEn8fkCrIWw==",
 				Name = "Vitor Faccio",
-				Type = UserType.Admin
+				Type = UserType.Admin,
+				Photo = ""
 			},
 			new User
 			{
@@ -40,7 +41,8 @@ public sealed class HomeEasyContext : DbContext
 				Email = "vitor@worker.com",
 				Password = "AQAAAAIAAYagAAAAEA9Zd9k/oCFtBcUMOt94/Brh110GdKXeDqeFMwNEbxVUv2Mlv5xcn+dxEn8fkCrIWw==",
 				Name = "Vitor Faccio",
-				Type = UserType.Worker
+				Type = UserType.Worker,
+				Photo = ""
 			},
 			new User
 			{
@@ -48,7 +50,8 @@ public sealed class HomeEasyContext : DbContext
 				Email = "vitor@client.com",
 				Password = "AQAAAAIAAYagAAAAEA9Zd9k/oCFtBcUMOt94/Brh110GdKXeDqeFMwNEbxVUv2Mlv5xcn+dxEn8fkCrIWw==",
 				Name = "Vitor Faccio",
-				Type = UserType.Client
+				Type = UserType.Client,
+				Photo = ""
 			}
 		);
 	}
