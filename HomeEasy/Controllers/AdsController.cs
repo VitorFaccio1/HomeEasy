@@ -23,9 +23,23 @@ namespace HomeEasy.Controllers
             _userService = userService;
         }
 
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var size = 9;
+
+            var result = await _adService.GetAdsWithCountAsync(page, size);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)size);
+
+            return View(result.Ads);
+        }
+
         public async Task<IActionResult> Details(Guid? id)
         {
             var ad = await _adService.GetAdAsync(id);
+
+            SetGoBack();
 
             return ad != null
                 ? View(ad)
@@ -49,7 +63,7 @@ namespace HomeEasy.Controllers
 
                 await _adService.CreateAsync(ad, user);
 
-                return RedirectToAction("GetWorkers", "Users");
+                return RedirectToAction("Index", "Ads");
             }
 
             return RedirectToAction(nameof(Create));
@@ -77,7 +91,7 @@ namespace HomeEasy.Controllers
             {
                 await _adService.EditAdAsync(ad);
 
-                return RedirectToAction("GetWorkers", "Users");
+                return RedirectToAction("MyAds", "Users");
             }
 
             return View(ad);
@@ -86,6 +100,8 @@ namespace HomeEasy.Controllers
         public async Task<IActionResult> Delete(Guid? id)
         {
             var ad = await _adService.GetAdAsync(id);
+
+            SetGoBack();
 
             return ad != null
                 ? View(ad)
@@ -99,9 +115,28 @@ namespace HomeEasy.Controllers
             var ad = await _adService.GetAdAsync(id);
 
             if (ad != null)
+            {
                 await _adService.DeleteAdAsync(ad);
 
-            return RedirectToAction("GetWorkers", "Users");
+                return RedirectToAction("MyAds", "Users");
+            }
+
+            return View(ad);
+        }
+
+        private void SetGoBack()
+        {
+            ViewBag.Action = Path.GetFileName(Request.Headers.Referer.ToString());
+
+            if (ViewBag.Action.Equals("MyAds"))
+            {
+                ViewBag.Controller = "Users";
+            }
+            else
+            {
+                ViewBag.Action = "Index";
+                ViewBag.Controller = "Ads";
+            }
         }
     }
 }
