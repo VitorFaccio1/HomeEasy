@@ -30,7 +30,16 @@ public sealed class UsersController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _userService.CreateAsync(user);
+            try
+            {
+                await _userService.CreateAsync(user);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("Email", "O e-mail fornecido já está em uso. Por favor, tente um e-mail diferente.");
+
+                return View(user);
+            }
 
             return RedirectToAction("Login");
         }
@@ -125,10 +134,22 @@ public sealed class UsersController : Controller
 
         if (ModelState.IsValid)
         {
+            bool changeEmail = user.Email.ToLower() != email.ToLower();
+
             user.Email = email;
             user.Name = name;
 
-            await _userService.UpdateUserAsync(user);
+            try
+            {
+                await _userService.UpdateUserAsync(user, changeEmail);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("Email", "O e-mail fornecido já está em uso. Por favor, tente um e-mail diferente.");
+
+                return View(user);
+            }
+
 
             return RedirectToAction(nameof(Details));
         }
@@ -153,7 +174,7 @@ public sealed class UsersController : Controller
         {
             user.Photo = photo;
 
-            await _userService.UpdateUserAsync(user);
+            await _userService.UpdateUserAsync(user, false);
 
             return RedirectToAction(nameof(Details));
         }
