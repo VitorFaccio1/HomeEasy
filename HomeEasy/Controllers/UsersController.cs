@@ -26,11 +26,11 @@ public sealed class UsersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Email,Password,Name,Type")] User user)
+    public async Task<IActionResult> Create([Bind("Id,Photo,Email,Password,Name,Type")] User user)
     {
         if (ModelState.IsValid)
         {
-            _userService.CreateAsync(user);
+            await _userService.CreateAsync(user);
 
             return RedirectToAction("Login");
         }
@@ -61,6 +61,7 @@ public sealed class UsersController : Controller
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.SerialNumber, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Name),
                 new(ClaimTypes.Role, user.Type.ToString())
             };
@@ -75,6 +76,7 @@ public sealed class UsersController : Controller
         return View();
     }
 
+    [Authorize]
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -87,6 +89,89 @@ public sealed class UsersController : Controller
     {
         var workers = await _userService.GetWorkersAsync();
 
-        return View(workers);
+        return workers != null
+            ? View(workers)
+            : NotFound();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Details()
+    {
+        return await UserView();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> MyAds()
+    {
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        return user != null
+            ? View(user.Ads)
+            : NotFound();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Edit()
+    {
+        return await UserView();
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(string email, string name)
+    {
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        if (ModelState.IsValid)
+        {
+            user.Email = email;
+            user.Name = name;
+
+            await _userService.UpdateUserAsync(user);
+
+            return RedirectToAction(nameof(Details));
+        }
+
+        return View(user);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> EditPhoto()
+    {
+        return await UserView();
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditPhoto(string photo)
+    {
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        if (!string.IsNullOrEmpty(photo))
+        {
+            user.Photo = photo;
+
+            await _userService.UpdateUserAsync(user);
+
+            return RedirectToAction(nameof(Details));
+        }
+        else
+        {
+            ModelState.Clear();
+            ModelState.AddModelError("Photo", "A foto é obrigatória.");
+
+            return View(user);
+        }
+    }
+
+    private async Task<IActionResult> UserView()
+    {
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        return user != null
+            ? View(user)
+            : NotFound();
     }
 }
