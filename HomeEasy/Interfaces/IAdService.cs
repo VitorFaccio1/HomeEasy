@@ -1,15 +1,16 @@
 ﻿using HomeEasy.Models;
 
-namespace HomeEasy.Interfaces
+namespace HomeEasy.Interfaces;
+
+public interface IAdService
 {
-    public interface IAdService
-    {
-        Task CreateAsync(Ad ad, User user);
+    Task CreateAsync(Ad ad, User user);
 
-        Task<Ad?> GetAdAsync(Guid? id);
+    Task<(List<Ad> Ads, int TotalCount)> GetAdsWithCountAsync(int page, int size, string userId = "");
 
-        Task EditAdAsync(Ad ad);
+    Task<Ad?> GetAdAsync(Guid? id);
 
-        Task DeleteAdAsync(Ad ad);
-    }
+    Task EditAdAsync(Ad ad);
+
+    Task DeleteAdAsync(Ad ad);
 }
