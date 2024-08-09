@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HomeEasy.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeEasy.Models;
 
@@ -24,4 +25,6 @@ public sealed class Ad
     public DateTime EndDate { get; set; }
 
     public User? User { get; set; }
+
+    public AdType Type { get; set; }
 }
