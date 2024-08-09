@@ -11,11 +11,13 @@ namespace HomeEasy.Controllers;
 public sealed class UsersController : Controller
 {
     private readonly IUserService _userService;
-    private readonly IJobService _jobService;
+    private readonly IAdService _adService;
 
-    public UsersController(IUserService userService, IJobService jobService)
+    public UsersController(
+         IAdService adService,
+        IUserService userService)
     {
-        _jobService = jobService;
+        _adService = adService;
         _userService = userService;
     }
 
@@ -94,35 +96,34 @@ public sealed class UsersController : Controller
     }
 
     [Authorize]
-    public async Task<IActionResult> GetWorkers()
-    {
-        var workers = await _userService.GetWorkersAsync();
-
-        return workers != null
-            ? View(workers)
-            : NotFound();
-    }
-
-    [Authorize]
     public async Task<IActionResult> Details()
-    {
-        return await UserView();
-    }
-
-    [Authorize]
-    public async Task<IActionResult> MyAds()
     {
         var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
-        return user != null
-            ? View(user.Ads)
-            : NotFound();
+        return View(user);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> MyAds(int page = 1)
+    {
+        var size = 3;
+
+        var result = await _adService.GetAdsWithCountAsync(page, size, User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)size);
+
+        return View(result.Ads);
     }
 
     [Authorize]
     public async Task<IActionResult> Edit()
     {
-        return await UserView();
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        return user != null
+            ? View(user)
+            : NotFound();
     }
 
     [Authorize]
@@ -150,7 +151,6 @@ public sealed class UsersController : Controller
                 return View(user);
             }
 
-
             return RedirectToAction(nameof(Details));
         }
 
@@ -160,7 +160,11 @@ public sealed class UsersController : Controller
     [Authorize]
     public async Task<IActionResult> EditPhoto()
     {
-        return await UserView();
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+
+        return user != null
+            ? View(user)
+            : NotFound();
     }
 
     [Authorize]
@@ -185,14 +189,5 @@ public sealed class UsersController : Controller
 
             return View(user);
         }
-    }
-
-    private async Task<IActionResult> UserView()
-    {
-        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
-
-        return user != null
-            ? View(user)
-            : NotFound();
     }
 }
