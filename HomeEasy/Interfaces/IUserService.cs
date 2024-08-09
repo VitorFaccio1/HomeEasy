@@ -1,15 +1,16 @@
 ﻿using HomeEasy.Models;
 
-namespace HomeEasy.Interfaces
+namespace HomeEasy.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        void CreateAsync(User user);
+    Task CreateAsync(User user);
 
-        Task<User> LoginAsync(string email, string password);
+    Task<User> LoginAsync(string email, string password);
 
-        Task<List<User>> GetWorkersAsync();
+    Task<List<User>> GetWorkersAsync();
 
-        Task<User> GetUserByEmailAsync(string email);
-    }
+    Task<User> GetUserByIdAsync(string id);
+
+    Task UpdateUserAsync(User user);
 }
