@@ -1,4 +1,4 @@
-﻿@model HomeEasy.Models.User
+﻿@model User
 @using HomeEasy.Extensions
 
 @{
@@ -21,13 +21,10 @@
                 <div class="col-md-8">
                     <dl class="row">
                         <dt class="col-sm-4">E-mail:</dt>
-                        <dd class="col-sm-8">@Model.Email </dd>
+                        <dd class="col-sm-8">@Model.Email</dd>
 
                         <dt class="col-sm-4">Tipo de Usuário:</dt>
                         <dd class="col-sm-8">@Model.Type.GetDescription()</dd>
-
-                        <dt class="col-sm-4">Número de Anúncios:</dt>
-                        <dd class="col-sm-8">@Model.Ads.Count()</dd>
                     </dl>
                 </div>
             </div>
