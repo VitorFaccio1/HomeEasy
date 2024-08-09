@@ -8,8 +8,6 @@ public interface IUserService
 
     Task<User?> LoginAsync(string email, string password);
 
-    Task<List<User>> GetWorkersAsync();
-
     Task<User?> GetUserByIdAsync(string id);
 
     Task UpdateUserAsync(User user, bool changeEmail = false);

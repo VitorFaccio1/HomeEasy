@@ -45,17 +45,8 @@ public sealed class UserService : IUserService
             : user;
     }
 
-    public async Task<List<User>> GetWorkersAsync() =>
-        await _context.Users
-               .Where(user => user.Ads.Any() && (user.Type == UserType.Worker || user.Type == UserType.Admin))
-               .Include(user => user.Ads)
-               .ToListAsync();
-
-    public async Task<User?> GetUserByIdAsync(string id)
-    {
-        return await _context.Users.Include(user => user.Ads)
-                .FirstOrDefaultAsync(user => user.Id.ToString() == id);
-    }
+    public async Task<User?> GetUserByIdAsync(string id) =>
+        await _context.Users.FirstOrDefaultAsync(user => user.Id.ToString() == id);
 
     public async Task UpdateUserAsync(User user, bool changeEmail = false)
     {
