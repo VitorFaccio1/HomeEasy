@@ -5,13 +5,40 @@
     ViewData["Title"] = "Trabalhadores";
 }
 
+<style>
+    .card-image-container {
+        width: 120px; /* Aumente o tamanho do círculo conforme necessário */
+        height: 120px; /* Aumente o tamanho do círculo conforme necessário */
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto; /* Centraliza o contêiner da imagem */
+    }
+
+    .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-body {
+        height: 280px; /* Diminua o tamanho do corpo do card conforme necessário */
+    }
+
+    .card {
+        max-width: 350px; /* Diminua o tamanho máximo do card conforme necessário */
+    }
+</style>
+
 <div class="container mt-5">
     <h1 class="text-center mb-5">@ViewData["Title"]</h1>
 
     @if (!User.IsInRole(UserType.Client.ToString()))
     {
         <div class="text-center mb-4">
-            <a asp-controller="Ads" asp-action="Create" class="btn btn-primary">Create New</a>
+            <a asp-controller="Ads" asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
         </div>
     }
 
@@ -22,6 +49,9 @@
             {
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
+                        <div class="card-image-container">
+                            <img src="@($"data:image/jpeg;base64,{worker.Photo}")" class="card-image" alt="Photo" />
+                        </div>
                         <div class="card-body text-center">
                             <h5 class="card-title">@worker.Name</h5>
                             <h6 class="card-subtitle mb-2 text-muted">@worker.Email</h6>
@@ -30,7 +60,7 @@
                             <p class="card-text">@ad.Description</p>
                             <p class="card-text"><strong>Trabalho:</strong> @ad.Job</p>
 
-                            @if (worker.Email.ToLower() == User.FindFirst(ClaimTypes.Email).Value)
+                            @if (worker.Id.ToString() == User.FindFirst(ClaimTypes.SerialNumber).Value)
                             {
                                 <a asp-action="Edit" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <a asp-action="Details" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Details</a>
