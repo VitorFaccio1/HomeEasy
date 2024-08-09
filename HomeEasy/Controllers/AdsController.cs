@@ -45,7 +45,7 @@ namespace HomeEasy.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userService.GetUserByEmailAsync(User.FindFirst(ClaimTypes.Email)?.Value);
+                var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
                 await _adService.CreateAsync(ad, user);
 
@@ -68,14 +68,14 @@ namespace HomeEasy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Title,Description,Job")] Ad ad)
+        public async Task<IActionResult> Edit([Bind("Id, Title,Description,Job")] Ad ad, Guid id)
         {
             if (id != ad.Id)
                 return NotFound();
 
             if (ModelState.IsValid)
             {
-                _adService.EditAdAsync(ad);
+                await _adService.EditAdAsync(ad);
 
                 return RedirectToAction("GetWorkers", "Users");
             }
@@ -99,7 +99,7 @@ namespace HomeEasy.Controllers
             var ad = await _adService.GetAdAsync(id);
 
             if (ad != null)
-                _adService.DeleteAdAsync(ad);
+                await _adService.DeleteAdAsync(ad);
 
             return RedirectToAction("GetWorkers", "Users");
         }
