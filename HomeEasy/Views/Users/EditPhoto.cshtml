@@ -1,0 +1,32 @@
+﻿@model HomeEasy.Models.User
+
+@{
+    ViewData["Title"] = "Alterar Foto de Perfil";
+}
+
+<h2>Alterar Foto de Perfil</h2>
+
+<form asp-action="EditPhoto" method="post">
+    <div class="form-group">
+        <label for="newPhoto">Selecione uma nova foto de perfil:</label>
+        <input type="file" class="form-control" id="newPhoto" name="newPhoto" accept="image/*" />
+        <input type="hidden" id="photoBase64" name="photo" />
+        <span asp-validation-for="Photo" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Details" class="btn btn-secondary">Cancelar</a>
+</form>
+
+<script>
+    document.getElementById('newPhoto').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('photoBase64').value = event.target.result.split(',')[1];
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

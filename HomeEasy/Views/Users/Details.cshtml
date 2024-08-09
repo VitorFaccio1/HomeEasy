@@ -1,0 +1,41 @@
+﻿@model HomeEasy.Models.User
+@using HomeEasy.Extensions
+
+@{
+    ViewData["Title"] = "Detalhes do Usuário";
+}
+
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-header text-center">
+            <h2>@Model.Name</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="data:image/png;base64,@Model.Photo" alt="Foto de perfil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+                    <div class="mt-2">
+                        <a asp-action="EditPhoto" class="btn btn-warning">Alterar Foto</a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <dl class="row">
+                        <dt class="col-sm-4">E-mail:</dt>
+                        <dd class="col-sm-8">@Model.Email </dd>
+
+                        <dt class="col-sm-4">Tipo de Usuário:</dt>
+                        <dd class="col-sm-8">@Model.Type.GetDescription()</dd>
+
+                        <dt class="col-sm-4">Número de Anúncios:</dt>
+                        <dd class="col-sm-8">@Model.Ads.Count()</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a asp-action="Edit" class="btn btn-primary">Editar Conta</a>
+                <a asp-action="MyAds" class="btn btn-success">Meus anúncios</a>
+                <a asp-action="Logout" class="btn btn-danger ml-2">Deslogar</a>
+            </div>
+        </div>
+    </div>
+</div>
