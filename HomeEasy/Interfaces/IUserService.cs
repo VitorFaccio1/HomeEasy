@@ -6,11 +6,11 @@ public interface IUserService
 {
     Task CreateAsync(User user);
 
-    Task<User> LoginAsync(string email, string password);
+    Task<User?> LoginAsync(string email, string password);
 
     Task<List<User>> GetWorkersAsync();
 
-    Task<User> GetUserByIdAsync(string id);
+    Task<User?> GetUserByIdAsync(string id);
 
-    Task UpdateUserAsync(User user);
+    Task UpdateUserAsync(User user, bool changeEmail = false);
 }
