@@ -29,6 +29,4 @@ public class User
     public string Photo { get; set; }
 
     public UserType Type { get; set; }
-
-    public List<Ad> Ads { get; set; } = [];
 }
