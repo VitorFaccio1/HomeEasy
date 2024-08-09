@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace HomeEasy.Models;
+namespace HomeEasy.Enums;
 
 public enum UserType
 {

@@ -1,4 +1,5 @@
-﻿using HomeEasy.Models;
+﻿using HomeEasy.Enums;
+using HomeEasy.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeEasy.Data;

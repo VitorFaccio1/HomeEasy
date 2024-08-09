@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HomeEasy.Enums;
 
 namespace HomeEasy.Models;
 
