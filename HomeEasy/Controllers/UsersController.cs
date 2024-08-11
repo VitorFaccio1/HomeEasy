@@ -1,4 +1,5 @@
-﻿using HomeEasy.Interfaces;
+﻿using HomeEasy.Extensions;
+using HomeEasy.Interfaces;
 using HomeEasy.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,7 +75,7 @@ public sealed class UsersController : Controller
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.SerialNumber, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Name),
-                new(ClaimTypes.Role, user.Type.ToString())
+                new(ClaimTypes.Role, user.Type.GetDescription())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -108,12 +109,16 @@ public sealed class UsersController : Controller
     {
         var size = 3;
 
-        var result = await _adService.GetAdsWithCountAsync(page, size, User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
+        var userAds = await _adService.GetUserAdsAsync(page, size, userId);
+
+        var userAdsTotalCount = await _adService.GetUserAdsTotalCountAsync(userId);
+
+        ViewBag.TotalPages = (int)Math.Ceiling(userAdsTotalCount / (double)size);
         ViewBag.CurrentPage = page;
-        ViewBag.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)size);
 
-        return View(result.Ads);
+        return View(userAds);
     }
 
     [Authorize]
