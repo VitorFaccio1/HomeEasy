@@ -1,9 +1,10 @@
 ﻿@using HomeEasy.Enums
 @using System.Security.Claims
+@using HomeEasy.Extensions
 @model IEnumerable<HomeEasy.Models.Ad>
 
 @{
-    ViewData["Title"] = "Trabalhadores";
+    ViewData["Title"] = "Clientes";
     var currentPage = ViewBag.CurrentPage;
     var totalPages = ViewBag.TotalPages;
 }
@@ -11,7 +12,7 @@
 <div class="container mt-5">
     <h1 class="text-center mb-5">@ViewData["Title"]</h1>
 
-    @if (!User.IsInRole(UserType.Client.ToString()))
+    @if (User.IsInRole(UserType.Client.GetDescription()))
     {
         <div class="text-center mb-4">
             <a asp-controller="Ads" asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
@@ -34,9 +35,13 @@
                         <p class="card-text">@ad.Description</p>
                         <p class="card-text"><strong>Trabalho:</strong> @ad.Job</p>
 
-                        <a asp-action="Details" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
+                        <a asp-action="Details" asp-controller="Ads"
+                           asp-route-id="@ad.Id"
+                           asp-route-viewType="@UserType.Client"
+                           asp-route-page="@currentPage"
+                           class="btn btn-sm btn-outline-secondary">Detalhes</a>
 
-                        @if (User.IsInRole(UserType.Admin.ToString()))
+                        @if (User.IsInRole(UserType.Admin.GetDescription()))
                         {
                             <a asp-action="Delete" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                         }
@@ -51,19 +56,30 @@
             @if (currentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">Anterior</a>
+                    <a class="page-link" asp-action="Clients"
+                       asp-route-page="@(currentPage - 1)">Anterior</a>
                 </li>
             }
             @for (var i = 1; i <= totalPages; i++)
             {
-                <li class="page-item @(i == currentPage ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                </li>
+                if (i == currentPage)
+                {
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">@i</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Clients" asp-route-page="@i">@i</a>
+                    </li>
+                }
             }
             @if (currentPage < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">Próximo</a>
+                    <a class="page-link" asp-action="Clients"
+                       asp-route-page="@(currentPage + 1)">Próximo</a>
                 </li>
             }
         </ul>
