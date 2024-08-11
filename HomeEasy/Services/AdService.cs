@@ -1,22 +1,18 @@
 ﻿using HomeEasy.Data;
+using HomeEasy.Enums;
 using HomeEasy.Interfaces;
 using HomeEasy.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HomeEasy.Services
 {
     public sealed class AdService : IAdService
     {
-        private readonly IMemoryCache _cache;
-        private readonly string _TotalAdsCacheKey = "TotalAds";
         private readonly HomeEasyContext _context;
 
         public AdService(
-            IMemoryCache cache,
             HomeEasyContext context)
         {
-            _cache = cache;
             _context = context;
         }
 
@@ -30,38 +26,37 @@ namespace HomeEasy.Services
             _context.Ads.Add(ad);
 
             await _context.SaveChangesAsync();
-
-            UpdateTotalAdsCache(+1);
         }
 
-        public async Task<(List<Ad> Ads, int TotalCount)> GetAdsWithCountAsync(int page, int size, string userId = "")
-        {
-            IQueryable<Ad> query = _context.Ads.Include(ad => ad.User);
+        public async Task<List<Ad>> GetClientsAdsAsync(int page, int size) =>
+            await _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.User.Type == UserType.Client).Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
 
-            int totalCount;
+        public async Task<List<Ad>> GetWorkersAdsAsync(int page, int size) =>
+            await _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.User.Type == UserType.Worker).Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
 
-            if (!string.IsNullOrEmpty(userId))
-            {
-                query = query.Where(m => m.User.Id.ToString() == userId);
+        public async Task<int> GetAdsTotalCountByUserTypeAsync(UserType userType) =>
+            await _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.User.Type == userType).CountAsync();
 
-                totalCount = await query.CountAsync();
-            }
-            else
-            {
-                if (!_cache.TryGetValue(_TotalAdsCacheKey, out totalCount))
-                {
-                    totalCount = await query.CountAsync();
-                    _cache.Set(_TotalAdsCacheKey, totalCount);
-                }
-            }
-
-            var ads = await query
+        public async Task<List<Ad>> GetUserAdsAsync(int page, int size, string userId) =>
+            await _context.Ads
+                .Include(ad => ad.User)
+                .Where(ad => ad.User.Id.ToString() == userId)
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
 
-            return (ads, totalCount);
-        }
+        public async Task<int> GetUserAdsTotalCountAsync(string userId) =>
+            await _context.Ads
+                .Include(ad => ad.User)
+                .Where(ad => ad.User.Id.ToString() == userId)
+                .CountAsync();
 
         public async Task<Ad?> GetAdAsync(Guid? id)
         {
@@ -73,8 +68,6 @@ namespace HomeEasy.Services
             _context.Ads.Remove(ad);
 
             await _context.SaveChangesAsync();
-
-            UpdateTotalAdsCache(-1);
         }
 
         public async Task EditAdAsync(Ad ad)
@@ -90,15 +83,6 @@ namespace HomeEasy.Services
                 _context.Ads.Update(existingAd);
 
                 await _context.SaveChangesAsync();
-            }
-        }
-
-        private void UpdateTotalAdsCache(int change)
-        {
-            if (_cache.TryGetValue(_TotalAdsCacheKey, out int totalAds))
-            {
-                totalAds += change;
-                _cache.Set(_TotalAdsCacheKey, totalAds);
             }
         }
     }
