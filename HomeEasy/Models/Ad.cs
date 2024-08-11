@@ -25,6 +25,4 @@ public sealed class Ad
     public DateTime EndDate { get; set; }
 
     public User? User { get; set; }
-
-    public AdType Type { get; set; }
 }
