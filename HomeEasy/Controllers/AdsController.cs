@@ -1,4 +1,5 @@
-﻿using HomeEasy.Interfaces;
+﻿using HomeEasy.Enums;
+using HomeEasy.Interfaces;
 using HomeEasy.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,23 +24,40 @@ namespace HomeEasy.Controllers
             _userService = userService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Clients(int page = 1)
         {
             var size = 9;
 
-            var result = await _adService.GetAdsWithCountAsync(page, size);
+            var clientsAds = await _adService.GetClientsAdsAsync(page, size);
+
+            var clientAdsTotalCount = await _adService.GetAdsTotalCountByUserTypeAsync(UserType.Client);
 
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling(result.TotalCount / (double)size);
+            ViewBag.TotalPages = (int)Math.Ceiling(clientAdsTotalCount / (double)size);
 
-            return View(result.Ads);
+            return View(clientsAds);
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Workers(int page = 1)
+        {
+            var size = 9;
+
+            var workerAds = await _adService.GetWorkersAdsAsync(page, size);
+            var workersAdsTotalCount = await _adService.GetAdsTotalCountByUserTypeAsync(UserType.Worker);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(workersAdsTotalCount / (double)size);
+
+            return View(workerAds);
+        }
+
+        public async Task<IActionResult> Details(Guid? id, int page, UserType viewType)
         {
             var ad = await _adService.GetAdAsync(id);
 
-            SetGoBack();
+            ViewBag.Page = page;
+
+            SetGoBack(viewType);
 
             return ad != null
                 ? View(ad)
@@ -63,15 +81,16 @@ namespace HomeEasy.Controllers
 
                 await _adService.CreateAsync(ad, user);
 
-                return RedirectToAction("Index", "Ads");
+                return RedirectToAction(nameof(Index), new { userType = user.Type });
             }
 
             return RedirectToAction(nameof(Create));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, int page = 1)
         {
             ViewBag.Jobs = await _jobService.GetJobsAsync();
+            ViewBag.Page = page;
 
             var ad = await _adService.GetAdAsync(id);
 
@@ -82,7 +101,7 @@ namespace HomeEasy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Id, Title,Description,Job")] Ad ad, Guid id)
+        public async Task<IActionResult> Edit([Bind("Id, Title,Description,Job")] Ad ad, Guid id, int page = 1)
         {
             if (id != ad.Id)
                 return NotFound();
@@ -91,17 +110,21 @@ namespace HomeEasy.Controllers
             {
                 await _adService.EditAdAsync(ad);
 
-                return RedirectToAction("MyAds", "Users");
+                return RedirectToAction("MyAds", "Users", new
+                {
+                    Page = page
+                });
             }
 
             return View(ad);
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, int page = 1)
         {
             var ad = await _adService.GetAdAsync(id);
+            ViewBag.Page = page;
 
-            SetGoBack();
+            SetGoBack(null);
 
             return ad != null
                 ? View(ad)
@@ -110,7 +133,7 @@ namespace HomeEasy.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id, int page = 1)
         {
             var ad = await _adService.GetAdAsync(id);
 
@@ -118,24 +141,30 @@ namespace HomeEasy.Controllers
             {
                 await _adService.DeleteAdAsync(ad);
 
-                return RedirectToAction("MyAds", "Users");
+                return RedirectToAction("MyAds", "Users", new
+                {
+                    Page = page
+                });
             }
 
             return View(ad);
         }
 
-        private void SetGoBack()
+        private void SetGoBack(UserType? viewType)
         {
             ViewBag.Action = Path.GetFileName(Request.Headers.Referer.ToString());
 
-            if (ViewBag.Action.Equals("MyAds"))
+            if (ViewBag.Action.Contains("MyAds"))
             {
                 ViewBag.Controller = "Users";
+                ViewBag.Action = "MyAds";
             }
             else
             {
-                ViewBag.Action = "Index";
                 ViewBag.Controller = "Ads";
+                ViewBag.Action = viewType == UserType.Client
+                    ? "Clients"
+                    : "Workers";
             }
         }
     }
