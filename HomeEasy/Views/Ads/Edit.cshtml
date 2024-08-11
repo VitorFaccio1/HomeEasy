@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" asp-route-page="@ViewBag.Page">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -37,7 +37,7 @@
     </div>
 </div>
 <div>
-    <a asp-controller="Users" asp-action="MyAds">Voltar</a>
+    <a asp-controller="Users" asp-route-page="@ViewBag.Page" asp-action="MyAds">Voltar</a>
 </div>
 
 @section Scripts {
