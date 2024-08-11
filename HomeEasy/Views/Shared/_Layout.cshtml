@@ -1,4 +1,5 @@
 ﻿@using HomeEasy.Enums
+@using HomeEasy.Extensions
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,14 +33,17 @@
                         }
                         else
                         {
-                            if (User.IsInRole(UserType.Admin.ToString()))
+                            if (User.IsInRole(UserType.Admin.GetDescription()))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Jobs" asp-action="Index">Trabalhos</a>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Ads" asp-action="Index">Trabalhadores</a>
+                                <a class="nav-link text-dark" asp-controller="Ads" asp-action="Workers">Trabalhadores</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Ads" asp-action="Clients">Clientes</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Details">Meu perfil</a>
