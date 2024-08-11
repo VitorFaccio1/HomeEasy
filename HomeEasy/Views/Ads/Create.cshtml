@@ -1,4 +1,6 @@
-﻿@model HomeEasy.Models.Ad
+﻿@using HomeEasy.Enums
+@using HomeEasy.Extensions
+@model HomeEasy.Models.Ad
 
 @{
     ViewData["Title"] = "Create";
@@ -37,7 +39,11 @@
 </div>
 
 <div>
-    <a asp-controller="Ads" asp-action="Index">Voltar</a>
+    @{
+        <a asp-controller="Ads" 
+        asp-action="@(User.IsInRole(UserType.Worker.GetDescription()) ? "Workers" : "Clients")">
+        Voltar</a>
+    }
 </div>
 
 @section Scripts {
