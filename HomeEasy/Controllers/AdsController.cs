@@ -1,4 +1,5 @@
 ﻿using HomeEasy.Enums;
+using HomeEasy.Extensions;
 using HomeEasy.Interfaces;
 using HomeEasy.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -81,7 +82,9 @@ namespace HomeEasy.Controllers
 
                 await _adService.CreateAsync(ad, user);
 
-                return RedirectToAction(nameof(Index), new { userType = user.Type });
+                return User.IsInRole(UserType.Worker.GetDescription())
+                    ? RedirectToAction(nameof(Workers))
+                    : RedirectToAction(nameof(Clients));
             }
 
             return RedirectToAction(nameof(Create));
