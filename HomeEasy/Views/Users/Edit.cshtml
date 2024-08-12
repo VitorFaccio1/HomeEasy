@@ -1,7 +1,10 @@
-﻿@model HomeEasy.Models.User
+﻿@using HomeEasy.Extensions
+@model HomeEasy.Models.User
 
 @{
-    ViewData["Title"] = "Detalhes do Usuário";
+    ViewData["Title"] = "Editar Usuário";
+
+    var formattedPhoneNumber = @Model.Phone.FormatPhoneNumber();
 }
 
 <div class="container mt-4">
@@ -12,7 +15,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-12 text-center">
-                        <h5 class="card-title">Nome</h5>
+                        <h5 class="card-title">Nome Completo</h5>
                         <input type="text" asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
@@ -23,6 +26,58 @@
                         <h5 class="card-title">Email</h5>
                         <input type="email" asp-for="Email" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Telefone</h5>
+                        <input type="text" asp-for="Phone" class="form-control" value="@formattedPhoneNumber" placeholder="+55 (11) 99999-9999" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">País</h5>
+                        <input type="text" asp-for="Country" class="form-control" />
+                        <span asp-validation-for="Country" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Estado</h5>
+                        <input type="text" asp-for="State" class="form-control" />
+                        <span asp-validation-for="State" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Cidade</h5>
+                        <input type="text" asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Gênero</h5>
+                        <select asp-for="Gender" class="form-control">
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Other">Outro</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="card-title">Data de Nascimento</h5>
+                        <input type="date" asp-for="DateOfBirth" class="form-control" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                     </div>
                 </div>
 

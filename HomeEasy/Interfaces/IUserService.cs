@@ -10,5 +10,5 @@ public interface IUserService
 
     Task<User?> GetUserByIdAsync(string id);
 
-    Task UpdateUserAsync(User user, bool changeEmail = false);
+    Task UpdateUserAsync(User user, EditUserModel editUserModel = null);
 }

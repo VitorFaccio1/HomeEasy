@@ -1,20 +1,18 @@
 ﻿using HomeEasy.Data;
+using HomeEasy.Extensions;
 using HomeEasy.Interfaces;
 using HomeEasy.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HomeEasy.Services;
 
 public sealed class UserService : IUserService
 {
-    private readonly IMemoryCache _cache;
     private readonly HomeEasyContext _context;
 
-    public UserService(IMemoryCache cache, HomeEasyContext context)
+    public UserService(HomeEasyContext context)
     {
-        _cache = cache;
         _context = context;
     }
 
@@ -25,6 +23,7 @@ public sealed class UserService : IUserService
 
         user.Id = new Guid();
         user.Password = HashPassword(user);
+        user.Phone = user.Phone.NormalizePhoneNumber();
 
         _context.Users.Add(user);
 
@@ -48,10 +47,24 @@ public sealed class UserService : IUserService
     public async Task<User?> GetUserByIdAsync(string id) =>
         await _context.Users.FirstOrDefaultAsync(user => user.Id.ToString() == id);
 
-    public async Task UpdateUserAsync(User user, bool changeEmail = false)
+    public async Task UpdateUserAsync(User user, EditUserModel editUserModel = null)
     {
-        if (changeEmail && await UserExistsAsync(user.Email))
-            throw new InvalidOperationException();
+        if (editUserModel != null)
+        {
+            bool changeEmail = user.Email.ToLower() != editUserModel.Email.ToLower();
+
+            if (changeEmail && await UserExistsAsync(editUserModel.Email))
+                throw new InvalidOperationException();
+
+            user.Email = editUserModel.Email;
+            user.State = editUserModel.State;
+            user.City = editUserModel.City;
+            user.Country = editUserModel.Country;
+            user.Phone = editUserModel.Phone.NormalizePhoneNumber();
+            user.DateOfBirth = editUserModel.DateOfBirth;
+            user.Name = editUserModel.Name;
+            user.Gender = editUserModel.Gender;
+        }
 
         _context.Users.Update(user);
 

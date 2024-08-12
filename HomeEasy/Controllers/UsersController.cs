@@ -29,7 +29,7 @@ public sealed class UsersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Photo,Email,Password,Name,Type")] User user)
+    public async Task<IActionResult> Create([Bind("Id,Photo,Email,Password,Name,Phone,Country,State,City,Gender,DateOfBirth,Type")] User user)
     {
         if (ModelState.IsValid)
         {
@@ -134,20 +134,15 @@ public sealed class UsersController : Controller
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(string email, string name)
+    public async Task<IActionResult> Edit(EditUserModel editUserModel)
     {
         var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
         if (ModelState.IsValid)
         {
-            bool changeEmail = user.Email.ToLower() != email.ToLower();
-
-            user.Email = email;
-            user.Name = name;
-
             try
             {
-                await _userService.UpdateUserAsync(user, changeEmail);
+                await _userService.UpdateUserAsync(user, editUserModel);
             }
             catch (Exception)
             {
@@ -183,7 +178,7 @@ public sealed class UsersController : Controller
         {
             user.Photo = photo;
 
-            await _userService.UpdateUserAsync(user, false);
+            await _userService.UpdateUserAsync(user);
 
             return RedirectToAction(nameof(Details));
         }

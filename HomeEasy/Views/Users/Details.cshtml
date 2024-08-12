@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Detalhes do Usuário";
+
+    var formattedPhoneNumber = @Model.Phone.FormatPhoneNumber();
 }
 
 <div class="container">
@@ -22,6 +24,24 @@
                     <dl class="row">
                         <dt class="col-sm-4">E-mail:</dt>
                         <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4">Telefone:</dt>
+                        <dd class="col-sm-8">@formattedPhoneNumber</dd>
+
+                        <dt class="col-sm-4">País:</dt>
+                        <dd class="col-sm-8">@Model.Country</dd>
+
+                        <dt class="col-sm-4">Estado:</dt>
+                        <dd class="col-sm-8">@Model.State</dd>
+
+                        <dt class="col-sm-4">Cidade:</dt>
+                        <dd class="col-sm-8">@Model.City</dd>
+
+                        <dt class="col-sm-4">Gênero:</dt>
+                        <dd class="col-sm-8">@Model.Gender</dd>
+
+                        <dt class="col-sm-4">Data de Nascimento:</dt>
+                        <dd class="col-sm-8">@Model.DateOfBirth.ToString("dd/MM/yyyy")</dd>
 
                         <dt class="col-sm-4">Tipo de Usuário:</dt>
                         <dd class="col-sm-8">@Model.Type.GetDescription()</dd>
