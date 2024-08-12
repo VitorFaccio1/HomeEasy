@@ -1,41 +1,58 @@
-﻿@model HomeEasy.Models.Ad
+﻿@using HomeEasy.Extensions
+@using System.Security.Claims
+@model HomeEasy.Models.Ad
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Anúncio";
+
+    var formattedPhoneNumber = Model.User.Phone.FormatPhoneNumber();
+    var message = $"Olá, me chamo {User.Identity.Name}! Vi seu anúncio de {Model.Job} no HomeEasy. Poderia me ajudar?";
+    var whatsappUrl = $"https://wa.me/{Model.User.Phone}?text={Uri.EscapeDataString(message)}";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light text-center">
+                    <h4 class="card-title text-dark">@Model.Title</h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <img src="data:image/jpeg;base64,@Model.User.Photo" alt="Foto do Usuário" class="rounded-circle mb-3" width="150" height="150">
+                        </div>
+                        <div class="col-md-8 text-md-left text-center">
+                            <h5>@Model.User.Name</h5>
+                            <p class="text-muted">E-mail: @Model.User.Email</p>
+                            <p class="text-muted">Gênero: @Model.User.Gender</p>
+                            <p class="text-muted">Telefone: @formattedPhoneNumber</p>
+                            <p class="text-muted">Cidade: @Model.User.City, @Model.User.State, @Model.User.Country</p>
+                        </div>
+                    </div>
 
-<div>
-    <h4>Ad</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-controller="@ViewBag.Controller" asp-route-page="@ViewBag.Page" asp-action="@ViewBag.Action">Voltar</a>
+                    <hr />
+
+                    <h5 class="mb-3">Detalhes do Trabalho</h5>
+                    <p><strong>Trabalho:</strong> @Model.Job</p>
+                    <p><strong>Descrição:</strong> @Model.Description</p>
+                    @if (User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value == Model.User.Id.ToString())
+                    {
+                        <div class="row">
+                            <div class="col-6">
+                                <p><strong>Data de Início:</strong> @Model.StartDate.ToString("dd/MM/yyyy")</p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Data de Término:</strong> @Model.EndDate.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-center">
+                    <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                    <a asp-controller="@ViewBag.Controller" asp-route-page="@ViewBag.Page" asp-action="@ViewBag.Action" class="btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
