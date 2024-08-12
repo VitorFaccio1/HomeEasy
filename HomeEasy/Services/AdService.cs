@@ -60,7 +60,7 @@ namespace HomeEasy.Services
 
         public async Task<Ad?> GetAdAsync(Guid? id)
         {
-            return await _context.Ads.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Ads.Include(ad => ad.User).FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task DeleteAdAsync(Ad ad)
