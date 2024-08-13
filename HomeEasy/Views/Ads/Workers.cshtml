@@ -36,6 +36,16 @@
                             <p class="card-text">@ad.Description</p>
                         </div>
                         <div>
+                            <br />
+                            @{
+                                var message = $"Olá, me chamo {User.Identity.Name}! Vi seu anúncio de {ad.Job} no HomeEasy. Poderia me ajudar?";
+                                var whatsappUrl = $"https://wa.me/{ad.User.Phone}?text={Uri.EscapeDataString(message)}";
+
+                                if (User.IsInRole(UserType.Client.GetDescription()))
+                                {
+                                    <a href="@whatsappUrl" target="_blank" class="btn btn-sm btn-success">WhatsApp</a>
+                                }
+                            }
                             <a asp-action="Details" asp-controller="Ads"
                                asp-route-id="@ad.Id"
                                asp-route-viewType="@UserType.Worker"
