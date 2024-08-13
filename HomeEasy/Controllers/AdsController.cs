@@ -29,9 +29,9 @@ namespace HomeEasy.Controllers
         {
             var size = 9;
 
-            var clientsAds = await _adService.GetClientsAdsAsync(page, size);
+            var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size);
 
-            var clientAdsTotalCount = await _adService.GetAdsTotalCountByUserTypeAsync(UserType.Client);
+            var clientAdsTotalCount = await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling(clientAdsTotalCount / (double)size);
@@ -43,8 +43,8 @@ namespace HomeEasy.Controllers
         {
             var size = 9;
 
-            var workerAds = await _adService.GetWorkersAdsAsync(page, size);
-            var workersAdsTotalCount = await _adService.GetAdsTotalCountByUserTypeAsync(UserType.Worker);
+            var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size);
+            var workersAdsTotalCount = await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling(workersAdsTotalCount / (double)size);
@@ -127,6 +127,8 @@ namespace HomeEasy.Controllers
             var ad = await _adService.GetAdAsync(id);
             ViewBag.Page = page;
 
+            SetGoBack(null);
+
             return ad != null
                 ? View(ad)
                 : NotFound();
@@ -142,7 +144,9 @@ namespace HomeEasy.Controllers
             {
                 await _adService.DeleteAdAsync(ad);
 
-                return RedirectToAction("MyAds", "Users");
+                return ad.EndDate >= DateTime.Now 
+                    ? RedirectToAction("MyAds", "Users") 
+                    : RedirectToAction("MyExpiredAds", "Users");
             }
 
             return View(ad);
@@ -156,6 +160,11 @@ namespace HomeEasy.Controllers
             {
                 ViewBag.Controller = "Users";
                 ViewBag.Action = "MyAds";
+            }
+            else if (ViewBag.Action.Contains("MyExpiredAds"))
+            {
+                ViewBag.Controller = "Users";
+                ViewBag.Action = "MyExpiredAds";
             }
             else
             {
