@@ -50,7 +50,7 @@
                         <input type="hidden" asp-for="Id" />
                         <div class="text-center">
                             <button type="submit" class="btn btn-danger btn-lg">Excluir</button>
-                            <a asp-controller="Users" asp-route-page="@ViewBag.Page" asp-action="MyAds" class="btn btn-outline-secondary btn-lg ms-3">Voltar</a>
+                            <a asp-controller="@ViewBag.Controller" asp-route-page="@ViewBag.Page" asp-action="@ViewBag.Action" class="btn btn-outline-secondary btn-lg ms-3">Voltar</a>
                         </div>
                     </form>
                 </div>
