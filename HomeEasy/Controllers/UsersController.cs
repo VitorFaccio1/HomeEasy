@@ -111,14 +111,31 @@ public sealed class UsersController : Controller
 
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var userAds = await _adService.GetUserAdsAsync(page, size, userId);
+        var userAds = await _adService.GetUserNotExpiredAdsAsync(page, size, userId);
 
-        var userAdsTotalCount = await _adService.GetUserAdsTotalCountAsync(userId);
+        var userAdsTotalCount = await _adService.GetUserNotExpiredAdsTotalCountAsync(userId);
 
         ViewBag.TotalPages = (int)Math.Ceiling(userAdsTotalCount / (double)size);
         ViewBag.CurrentPage = page;
 
         return View(userAds);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> MyExpiredAds(int page = 1)
+    {
+        var size = 3;
+
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        var userExpiredAds = await _adService.GetUserExpiredAdsAsync(page, size, userId);
+
+        var userExpiredAdsTotalCount = await _adService.GetUserExpiredAdsTotalCountAsync(userId);
+
+        ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAdsTotalCount / (double)size);
+        ViewBag.CurrentPage = page;
+
+        return View(userExpiredAds);
     }
 
     [Authorize]
