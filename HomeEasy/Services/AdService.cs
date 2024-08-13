@@ -10,8 +10,7 @@ namespace HomeEasy.Services
     {
         private readonly HomeEasyContext _context;
 
-        public AdService(
-            HomeEasyContext context)
+        public AdService(HomeEasyContext context)
         {
             _context = context;
         }
@@ -28,34 +27,50 @@ namespace HomeEasy.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Ad>> GetClientsAdsAsync(int page, int size) =>
+        public async Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size) =>
             await _context.Ads.Include(ad => ad.User)
-                .Where(ad => ad.User.Type == UserType.Client).Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
-
-        public async Task<List<Ad>> GetWorkersAdsAsync(int page, int size) =>
-            await _context.Ads.Include(ad => ad.User)
-                .Where(ad => ad.User.Type == UserType.Worker).Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
-
-        public async Task<int> GetAdsTotalCountByUserTypeAsync(UserType userType) =>
-            await _context.Ads.Include(ad => ad.User)
-                .Where(ad => ad.User.Type == userType).CountAsync();
-
-        public async Task<List<Ad>> GetUserAdsAsync(int page, int size, string userId) =>
-            await _context.Ads
-                .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId)
+                .Where(ad => ad.User.Type == UserType.Client && ad.EndDate >= DateTime.Now)
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
 
-        public async Task<int> GetUserAdsTotalCountAsync(string userId) =>
+        public async Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size) =>
+            await _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.User.Type == UserType.Worker && ad.EndDate >= DateTime.Now)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+        public async Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType) =>
+            await _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.EndDate >= DateTime.Now && ad.User.Type == userType).CountAsync();
+
+        public async Task<List<Ad>> GetUserNotExpiredAdsAsync(int page, int size, string userId) =>
             await _context.Ads
                 .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId)
+                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate >= DateTime.Now)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+        public async Task<List<Ad>> GetUserExpiredAdsAsync(int page, int size, string userId) =>
+            await _context.Ads
+                .Include(ad => ad.User)
+                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate < DateTime.Now)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+        public async Task<int> GetUserNotExpiredAdsTotalCountAsync(string userId) =>
+            await _context.Ads
+                .Include(ad => ad.User)
+                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate >= DateTime.Now)
+                .CountAsync();
+
+        public async Task<int> GetUserExpiredAdsTotalCountAsync(string userId) =>
+            await _context.Ads
+                .Include(ad => ad.User)
+                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate < DateTime.Now)
                 .CountAsync();
 
         public async Task<Ad?> GetAdAsync(Guid? id)
