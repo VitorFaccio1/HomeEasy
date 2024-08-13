@@ -1,4 +1,5 @@
-﻿@using HomeEasy.Extensions
+﻿@using HomeEasy.Enums
+@using HomeEasy.Extensions
 @using System.Security.Claims
 @model HomeEasy.Models.Ad
 
@@ -49,7 +50,11 @@
                     }
                 </div>
                 <div class="card-footer text-center">
-                    <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                    @if (User.IsInRole(UserType.Worker.GetDescription()) && Model.User.Type.Equals(UserType.Client)
+                    || User.IsInRole(UserType.Client.GetDescription()) && Model.User.Type.Equals(UserType.Worker))
+                    {
+                        <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                    }
                     <a asp-controller="@ViewBag.Controller" asp-route-page="@ViewBag.Page" asp-action="@ViewBag.Action" class="btn btn-secondary">Voltar</a>
                 </div>
             </div>
