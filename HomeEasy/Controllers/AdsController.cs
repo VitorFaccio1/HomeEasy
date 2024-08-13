@@ -127,8 +127,6 @@ namespace HomeEasy.Controllers
             var ad = await _adService.GetAdAsync(id);
             ViewBag.Page = page;
 
-            SetGoBack(null);
-
             return ad != null
                 ? View(ad)
                 : NotFound();
@@ -136,7 +134,7 @@ namespace HomeEasy.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id, int page = 1)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var ad = await _adService.GetAdAsync(id);
 
@@ -144,10 +142,7 @@ namespace HomeEasy.Controllers
             {
                 await _adService.DeleteAdAsync(ad);
 
-                return RedirectToAction("MyAds", "Users", new
-                {
-                    Page = page
-                });
+                return RedirectToAction("MyAds", "Users");
             }
 
             return View(ad);
