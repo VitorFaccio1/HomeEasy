@@ -67,27 +67,7 @@
                             </p>
                         </div>
                         <div class="mt-auto">
-                            @{
-                                var message = $"Olá, me chamo {User.Identity.Name}! Vi seu anúncio de {ad.Job} no HomeEasy. Poderia me ajudar?";
-                                var whatsappUrl = $"https://wa.me/{ad.User.Phone}?text={Uri.EscapeDataString(message)}";
-
-                                if (User.IsInRole(UserType.Client.GetDescription()))
-                                {
-                                    <a href="@whatsappUrl" target="_blank" class="btn btn-sm btn-success">WhatsApp</a>
-                                }
-                            }
-
-                            <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
-
-                            @if (User.IsInRole(UserType.Admin.GetDescription()))
-                            {
-                                <a asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                            }
-
-                            @if (User.IsInRole(UserType.Client.GetDescription()) && ad.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
-                            {
-                                <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Contratar</a>
-                            }
+                            <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-secondary">Detalhes</a>
                         </div>
                     </div>
                 </div>

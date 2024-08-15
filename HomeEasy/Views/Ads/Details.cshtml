@@ -57,19 +57,9 @@
                     <hr />
 
                     <h5 class="mb-3">Detalhes do Trabalho</h5>
-                    <p><strong>Trabalho:</strong> @Model.Job</p>
+
+                    <p><strong>@(Model.User.Type == UserType.Client ? "Precisa de :" : "Trabalho:")</strong> @Model.Job</p>
                     <p><strong>Descrição:</strong> @Model.Description</p>
-                    @if (User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value == Model.User.Id.ToString())
-                    {
-                        <div class="row">
-                            <div class="col-6">
-                                <p><strong>Data de Início:</strong> @Model.StartDate.ToString("dd/MM/yyyy")</p>
-                            </div>
-                            <div class="col-6">
-                                <p><strong>Data de Término:</strong> @Model.EndDate.ToString("dd/MM/yyyy")</p>
-                            </div>
-                        </div>
-                    }
                 </div>
                 <div class="card-footer text-center">
                     @if (User.IsInRole(UserType.Worker.GetDescription()) && Model.User.Type.Equals(UserType.Client)
@@ -77,7 +67,7 @@
                     {
                         <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
                     }
-                    <a onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</a>
+                    <a asp-action="Details" asp-controller="Users" asp-route-id="@Model.User.Id" class="btn btn-primary">Ver perfil</a>
                     @if (!User.IsInRole(Model.User.Type.GetDescription()) && Model.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
                     {
                         <form asp-action="Create" asp-route-adId="@Model.Id" asp-controller="Contracts" method="post" style="display:inline;">
@@ -85,6 +75,10 @@
                         </form>
                     }
                 </div>
+            </div>
+            <br />
+            <div class="text-center">
+                <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
             </div>
         </div>
     </div>

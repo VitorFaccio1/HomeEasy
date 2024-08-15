@@ -11,7 +11,7 @@
             <h2>Avaliação de @ViewBag.Valued.Name (@(ViewBag.Valued.Type == UserType.Client ? "Cliente" : "Trabalhador"))</h2>
         </div>
         <div class="card-body text-center">
-            <form asp-action="Create" method="post" asp-route-contractId="@ViewBag.ContractId">
+            <form asp-action="Create" method="post" asp-route-contractId="@ViewBag.ContractId" id="form">
                 <div class="mb-4">
                     <label class="form-label fs-4 fw">Sua Avaliação:</label>
                     <div class="star-rating d-flex justify-content-center">
@@ -32,11 +32,34 @@
                     <span asp-validation-for="Comment" class="text-danger"></span>
                 </div>
 
+                <div class="form-check mb-4">
+                    <label class="form-check-label">
+                        Deseja ser anônimo?
+                        <input type="checkbox" id="anonymousCheck" name="anonymousCheck" onclick="updateAnonymousField()">
+                    </label>
+                </div>
+
+                <!-- Campo oculto para enviar o valor de anonymous -->
+                <input type="hidden" id="anonymousField" name="anonymous" value="false" />
+
                 <button type="submit" class="btn btn-primary w-100">Enviar Avaliação</button>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function updateAnonymousField() {
+        var checkbox = document.getElementById('anonymousCheck');
+        var hiddenField = document.getElementById('anonymousField');
+
+        if (checkbox.checked) {
+            hiddenField.value = "true";
+        } else {
+            hiddenField.value = "false";
+        }
+    }
+</script>
 
 <style>
     .star-rating {

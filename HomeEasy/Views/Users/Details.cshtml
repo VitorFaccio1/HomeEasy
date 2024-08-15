@@ -1,5 +1,6 @@
 ﻿@model User
 @using HomeEasy.Extensions
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Detalhes do Usuário";
@@ -8,6 +9,11 @@
 
     var rating = @Model.Reviews.GetUserRating();
     var reviewsCount = Model.Reviews.Count;
+
+    var userAccount = User.FindFirstValue(ClaimTypes.SerialNumber) == Model.Id.ToString();
+
+    var message = $"Olá, me chamo {User.Identity.Name}! Vi seu perfil no HomeEasy. Poderia me ajudar?";
+    var whatsappUrl = $"https://wa.me/{Model.Phone}?text={Uri.EscapeDataString(message)}";
 }
 
 <div class="container">
@@ -19,9 +25,12 @@
             <div class="row">
                 <div class="col-md-4 text-center">
                     <img src="data:image/png;base64,@Model.Photo" alt="Foto de perfil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
-                    <div class="mt-2">
-                        <a asp-action="EditPhoto" class="btn btn-warning">Alterar Foto</a>
-                    </div>
+                    @if (userAccount)
+                    {
+                        <div class="mt-2">
+                            <a asp-action="EditPhoto" class="btn btn-outline-dark">Alterar Foto</a>
+                        </div>
+                    }
                 </div>
                 <div class="col-md-8">
                     <dl class="row">
@@ -68,10 +77,26 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <a asp-action="Edit" class="btn btn-primary">Editar Conta</a>
-                <a asp-action="MyAds" class="btn btn-success">Meus anúncios</a>
-                <a asp-action="Logout" class="btn btn-danger ml-2">Deslogar</a>
+
+                @if (userAccount)
+                {
+                    <a asp-action="Edit" class="btn btn-success">Editar Conta</a>
+                    <a asp-action="Logout" class="btn btn-danger ml-2">Deslogar</a>
+                }
+                else
+                {
+                    <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                }
+
+                <a asp-controller="Ads" asp-action="UserAds" asp-route-id="@Model.Id" class="btn btn-primary">
+                    @(userAccount ? "Meus anúncios" : "Anúncios")
+                </a>
+                <a asp-controller="Reviews" asp-action="UserReviews" asp-route-id="@Model.Id" class="btn btn-warning">Avaliações</a>
             </div>
         </div>
+    </div>
+    <br />
+    <div class="text-center">
+        <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
     </div>
 </div>
