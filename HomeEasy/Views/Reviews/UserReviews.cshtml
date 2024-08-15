@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Review>
+
+@{
+    ViewData["Title"] = "Lista de Avaliações";
+}
+
+@if (Model.Any())
+{
+    <div class="container my-5">
+        <h1 class="text-center mb-5">Avaliações dos Usuários</h1>
+
+        <div class="row">
+            @foreach (var review in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-center">
+                                Avaliação:
+                                <span class="text-warning">
+                                    @for (int i = 0; i < review.Rating; i++)
+                                    {
+                                        <i class="bi bi-star-fill">★</i>
+                                    }
+                                </span>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted text-center">
+                                Por: @(string.IsNullOrEmpty(review.ValuerName) ? "Anônimo" : review.ValuerName)
+                            </h6>
+                            <p class="card-text flex-grow-1"><strong>Descrição: </strong>@review.Comment</p>
+                            <p class="text-end text-muted">
+                                <small>@review.Date.ToShortDateString()</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="text-center">Nenhuma avaliação encontrada.</h1>
+}
+<div class="mt-3 text-center">
+    <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
+</div>
