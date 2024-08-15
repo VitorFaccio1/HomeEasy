@@ -49,9 +49,7 @@
                 </div>
             </div>
             <div class="text-center mt-3">
-                <a asp-controller="Ads"
-                   asp-action="@(User.IsInRole(UserType.Worker.GetDescription()) ? "Workers" : "Clients")"
-                   class="btn btn-secondary">
+                <a onclick="this.disabled=true; history.back();" class="btn btn-secondary">
                     Voltar
                 </a>
             </div>

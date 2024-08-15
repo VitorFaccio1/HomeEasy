@@ -42,8 +42,8 @@
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-controller="Users" asp-route-page="@ViewBag.Page" asp-action="MyAds" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left-circle"></i> Voltar para meus anúncios
+                    <a onclick="this.disabled=true; history.back();" class="btn btn-secondary">
+                        Voltar para meus anúncios
                     </a>
                 </div>
             </div>
