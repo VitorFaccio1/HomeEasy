@@ -37,16 +37,20 @@ public class ReviewsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Rating,Comment")] Review review, Guid contractId)
+    public async Task<IActionResult> Create([Bind("Rating,Comment")] Review review, Guid contractId, bool anonymous)
     {
         var contract = await _contractService.GetContractById(contractId);
 
-        var valuer = GetValuerOrValued(contract);
-        var valued = GetValuerOrValued(contract);
+        var userId = User.FindFirstValue(ClaimTypes.SerialNumber);
+
+        User? valuer;
+        User? valued;
+
+        SetValuerAndValued(contract, userId, out valuer, out valued);
 
         if (ModelState.IsValid)
         {
-            await _reviewService.CreateAsync(review, valuer, valued, contract);
+            await _reviewService.CreateAsync(review, valuer, valued, contract, anonymous);
 
             return RedirectToAction("Completeds", "Contracts");
         }
@@ -57,12 +61,24 @@ public class ReviewsController : Controller
         return View(review);
     }
 
-    private User GetValuerOrValued(Contract? contract)
+    private static void SetValuerAndValued(Contract? contract, string? userId, out User? valuer, out User valued)
     {
-        var userId = User.FindFirstValue(ClaimTypes.SerialNumber);
+        if (contract.Contractor.Id.ToString() == userId)
+        {
+            valuer = contract.Contractor;
+            valued = contract.Contractee;
+        }
+        else
+        {
+            valuer = contract.Contractee;
+            valued = contract.Contractor;
+        }
+    }
 
-        return contract.Contractor.Id.ToString() == userId
-            ? contract.Contractor
-            : contract.Contractee;
+    public async Task<IActionResult> UserReviews(Guid id)
+    {
+        var reviews = await _reviewService.GetUserReviews(id);
+
+        return View(reviews);
     }
 }
