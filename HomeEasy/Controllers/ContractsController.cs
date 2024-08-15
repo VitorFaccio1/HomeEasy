@@ -85,7 +85,7 @@ public class ContractsController : Controller
     {
         await _contractService.CompleteContractAsync(id);
 
-        return RedirectToAction("Create", "Reviews", new { id = id });
+        return RedirectToAction("Create", "Reviews", new { id });
     }
 
     public async Task<IActionResult> Delete(Guid id)
