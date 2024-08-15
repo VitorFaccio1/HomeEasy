@@ -1,6 +1,7 @@
 ﻿using HomeEasy.Data;
 using HomeEasy.Interfaces;
 using HomeEasy.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeEasy.Services;
 
@@ -13,11 +14,11 @@ public sealed class ReviewService : IReviewService
         _context = context;
     }
 
-    public async Task CreateAsync(Review review, User valuer, User valued, Contract contract)
+    public async Task CreateAsync(Review review, User valuer, User valued, Contract contract, bool anonymous)
     {
         review.Date = DateOnly.FromDateTime(DateTime.Now.Date);
         review.Id = Guid.NewGuid();
-        review.Reviewer = valuer;
+        review.ValuerName = !anonymous ? valuer.Name : null;
 
         valued.Reviews.Add(review);
 
@@ -30,4 +31,8 @@ public sealed class ReviewService : IReviewService
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<Review>> GetUserReviews(Guid userId) =>
+        (await _context.Users.Include(user => user.Reviews)
+            .FirstOrDefaultAsync(user => user.Id == userId)).Reviews.OrderBy(review => review.Date);
 }
