@@ -31,7 +31,7 @@ public class AdsController : Controller
 
         var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size);
 
-        var clientAdsTotalCount = await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client);
+        var clientAdsTotalCount = clientsAds.Any() ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client) : 0;
 
         ViewBag.CurrentPage = page;
         ViewBag.TotalPages = (int)Math.Ceiling(clientAdsTotalCount / (double)size);
@@ -44,7 +44,8 @@ public class AdsController : Controller
         var size = 9;
 
         var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size);
-        var workersAdsTotalCount = await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker);
+
+        var workersAdsTotalCount = workerAds.Any() ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker) : 0;
 
         ViewBag.CurrentPage = page;
         ViewBag.TotalPages = (int)Math.Ceiling(workersAdsTotalCount / (double)size);
@@ -109,19 +110,15 @@ public class AdsController : Controller
         {
             await _adService.EditAdAsync(ad);
 
-            return RedirectToAction("MyAds", "Users", new
-            {
-                Page = page
-            });
+            return RedirectToAction("MyAds", "Ads", new { Page = page });
         }
 
         return View(ad);
     }
 
-    public async Task<IActionResult> Delete(Guid? id, int page = 1)
+    public async Task<IActionResult> Delete(Guid? id)
     {
         var ad = await _adService.GetAdAsync(id);
-        ViewBag.Page = page;
 
         return ad != null
             ? View(ad)
@@ -139,10 +136,43 @@ public class AdsController : Controller
             await _adService.DeleteAdAsync(ad);
 
             return ad.EndDate >= DateTime.Now
-                ? RedirectToAction("MyAds", "Users")
-                : RedirectToAction("MyExpiredAds", "Users");
+                ? RedirectToAction("UserAds", "Ads")
+                : RedirectToAction("MyExpiredAds", "Ads");
         }
 
         return View(ad);
+    }
+
+    public async Task<IActionResult> UserAds(string id, int page = 1)
+    {
+        var size = 3;
+
+        var user = await _userService.GetUserByIdAsync(id);
+
+        var userAds = await _adService.GetUserNotExpiredAdsAsync(page, size, id);
+
+        var userAdsTotalCount = userAds.Any() ? await _adService.GetUserNotExpiredAdsTotalCountAsync(id) : 0;
+
+        ViewBag.TotalPages = (int)Math.Ceiling(userAdsTotalCount / (double)size);
+        ViewBag.CurrentPage = page;
+        ViewBag.User = user;
+
+        return View(userAds);
+    }
+
+    public async Task<IActionResult> MyExpiredAds(int page = 1)
+    {
+        var size = 3;
+
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        var userExpiredAds = await _adService.GetUserExpiredAdsAsync(page, size, userId);
+
+        var userExpiredAdsTotalCount = userExpiredAds.Any() ? await _adService.GetUserExpiredAdsTotalCountAsync(userId) : 0;
+
+        ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAdsTotalCount / (double)size);
+        ViewBag.CurrentPage = page;
+
+        return View(userExpiredAds);
     }
 }
