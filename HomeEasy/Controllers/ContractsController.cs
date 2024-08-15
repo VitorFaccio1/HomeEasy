@@ -1,0 +1,108 @@
+﻿using HomeEasy.Interfaces;
+using HomeEasy.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace HomeEasy.Controllers;
+
+[Authorize]
+public class ContractsController : Controller
+{
+    private readonly IAdService _adService;
+    private readonly IUserService _userService;
+    private readonly IContractService _contractService;
+
+    public ContractsController(
+        IAdService adService,
+        IUserService userService,
+        IContractService contractService)
+    {
+        _adService = adService;
+        _userService = userService;
+        _contractService = contractService;
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Guid adId)
+    {
+        var ad = await _adService.GetAdAsync(adId);
+
+        var contractor = await _userService.GetUserByIdAsync(User.FindFirstValue(ClaimTypes.SerialNumber));
+
+        var contract = new Contract(ad, contractor);
+
+        await _contractService.CreateAsync(contract);
+
+        return RedirectToAction(nameof(Pendings));
+    }
+
+    public async Task<IActionResult> Approveds()
+    {
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        var contracts = await _contractService.GetUserNotCompletedApprovedContractsAsync(userId);
+
+        return View(contracts);
+    }
+
+    public async Task<IActionResult> Pendings()
+    {
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        var contracts = await _contractService.GetUserNotCompletedPendingContractsAsync(userId);
+
+        return View(contracts);
+    }
+
+    public async Task<IActionResult> Completeds()
+    {
+        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        var contracts = await _contractService.GetUserCompletedContractsAsync(userId);
+
+        return View(contracts);
+    }
+
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var contract = await _contractService.GetContractById(id);
+
+        return View(contract);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ApproveContract(Guid id)
+    {
+        await _contractService.ApproveContractAsync(id);
+
+        return RedirectToAction(nameof(Approveds), new { userId = User.FindFirstValue(ClaimTypes.SerialNumber) });
+    }
+
+    public async Task<IActionResult> CompleteContract(Guid id)
+    {
+        await _contractService.CompleteContractAsync(id);
+
+        return RedirectToAction("Create", "Reviews", new { id = id });
+    }
+
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var contract = await _contractService.GetContractById(id);
+
+        return contract != null
+            ? View(contract)
+            : NotFound();
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+        await _contractService.DeleteContractAsync(id);
+
+        return RedirectToAction(nameof(Pendings), new { userId = User.FindFirstValue(ClaimTypes.SerialNumber) });
+    }
+}

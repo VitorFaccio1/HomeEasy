@@ -22,13 +22,35 @@
                     <div class="row align-items-center">
                         <div class="col-md-4">
                             <img src="data:image/jpeg;base64,@Model.User.Photo" alt="Foto do Usuário" class="rounded-circle mb-3" width="150" height="150">
+                            @{
+                                var rating = Model.User.Reviews.GetUserRating();
+                                var reviewsCount = Model.User.Reviews.Count;
+
+                                <div class="card-text">
+                                    <strong>Nota:</strong>
+                                    @if (rating == 0)
+                                    {
+                                        <span>Não possui avaliações</span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            @for (int i = 0; i < rating; i++)
+                                            {
+                                                <i class="fa fa-star" style="color: gold; font-size: 25px;">★</i>
+                                            }
+                                            <span class="ml-2">(@reviewsCount)</span>
+                                        </span>
+                                    }
+                                </div>
+                            }
                         </div>
                         <div class="col-md-8 text-md-left text-center">
                             <h5>@Model.User.Name</h5>
                             <p class="text-muted">E-mail: @Model.User.Email</p>
                             <p class="text-muted">Gênero: @Model.User.Gender</p>
                             <p class="text-muted">Telefone: @formattedPhoneNumber</p>
-                            <p class="text-muted">Cidade: @Model.User.City, @Model.User.State, @Model.User.Country</p>
+                            <p class="text-muted">Localidade: @Model.User.City, @Model.User.State, @Model.User.Country</p>
                         </div>
                     </div>
 
@@ -55,7 +77,13 @@
                     {
                         <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
                     }
-                    <a asp-controller="@ViewBag.Controller" asp-route-page="@ViewBag.Page" asp-action="@ViewBag.Action" class="btn btn-secondary">Voltar</a>
+                    <a onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</a>
+                    @if (!User.IsInRole(Model.User.Type.GetDescription()) && Model.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
+                    {
+                        <form asp-action="Create" asp-route-adId="@Model.Id" asp-controller="Contracts" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Contratar</button>
+                        </form>
+                    }
                 </div>
             </div>
         </div>

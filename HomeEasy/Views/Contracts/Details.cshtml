@@ -1,0 +1,46 @@
+﻿@model HomeEasy.Models.Contract
+
+@{
+    ViewData["Title"] = "Detalhes do Contrato";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-white">
+            <h2 class="mb-0 text-center">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3 justify-content-center text-center">
+                <div class="col-md-6">
+                    <h5 class="card-title">Informações do Contratante</h5>
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <img src="data:image/png;base64,@Model.Contractor.Photo" alt="Foto do Contratante" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                        <div class="ms-3">
+                            <p class="card-text"><strong>Nome:</strong> @Model.Contractor.Name</p>
+                            <p class="card-text"><strong>Email:</strong> @Model.Contractor.Email</p>
+                            <p class="card-text"><strong>Telefone:</strong> @Model.Contractor.Phone</p>
+                        </div>
+                    </div>
+                    <h5 class="card-title">Informações do Contratado</h5>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img src="data:image/png;base64,@Model.Contractee.Photo" alt="Foto do Contratado" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                        <div class="ms-3">
+                            <p class="card-text"><strong>Nome:</strong> @Model.Contractee.Name</p>
+                            <p class="card-text"><strong>Email:</strong> @Model.Contractee.Email</p>
+                            <p class="card-text"><strong>Telefone:</strong> @Model.Contractee.Phone</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="card-title" style="padding-top: 5%">Informações do Anúncio</h5>
+                    <p class="card-text"><strong>Título:</strong> @Model.Ad.Title</p>
+                    <p class="card-text"><strong>Descrição:</strong> @Model.Ad.Description</p>
+                    <p class="card-text"><strong>Trabalho:</strong> @Model.Ad.Job</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a onclick="this.disabled=true; history.back()" class="btn btn-secondary mx-2">Voltar</a>
+        </div>
+    </div>
+</div>

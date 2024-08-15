@@ -28,14 +28,14 @@ namespace HomeEasy.Services
         }
 
         public async Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size) =>
-            await _context.Ads.Include(ad => ad.User)
+            await _context.Ads.Include(ad => ad.User.Reviews)
                 .Where(ad => ad.User.Type == UserType.Client && ad.EndDate >= DateTime.Now)
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
 
         public async Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size) =>
-            await _context.Ads.Include(ad => ad.User)
+            await _context.Ads.Include(ad => ad.User.Reviews)
                 .Where(ad => ad.User.Type == UserType.Worker && ad.EndDate >= DateTime.Now)
                 .Skip((page - 1) * size)
                 .Take(size)
@@ -73,10 +73,8 @@ namespace HomeEasy.Services
                 .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate < DateTime.Now)
                 .CountAsync();
 
-        public async Task<Ad?> GetAdAsync(Guid? id)
-        {
-            return await _context.Ads.Include(ad => ad.User).FirstOrDefaultAsync(m => m.Id == id);
-        }
+        public async Task<Ad?> GetAdAsync(Guid? id) =>
+            await _context.Ads.Include(ad => ad.User.Reviews).FirstOrDefaultAsync(m => m.Id == id);
 
         public async Task DeleteAdAsync(Ad ad)
         {

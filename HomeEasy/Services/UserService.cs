@@ -45,7 +45,9 @@ public sealed class UserService : IUserService
     }
 
     public async Task<User?> GetUserByIdAsync(string id) =>
-        await _context.Users.FirstOrDefaultAsync(user => user.Id.ToString() == id);
+        await _context.Users
+        .Include(user => user.Reviews)
+        .FirstOrDefaultAsync(user => user.Id.ToString() == id);
 
     public async Task UpdateUserAsync(User user, EditUserModel editUserModel = null)
     {
