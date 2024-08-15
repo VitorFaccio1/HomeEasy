@@ -1,0 +1,60 @@
+﻿@using System.Security.Claims
+@using HomeEasy.Enums
+@using HomeEasy.Extensions
+@model IEnumerable<HomeEasy.Models.Contract>
+
+@{
+    ViewData["Title"] = "Contratos aprovados";
+}
+
+@if (Model.Any())
+{
+    <div class="container mt-4">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-center">
+                            Contratante
+                        </th>
+                        <th class="text-center">
+                            Contratado
+                        </th>
+                        <th class="text-center">
+                            Trabalho
+                        </th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contract in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Contractor.Name)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Contractee.Name)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Ad.Job)
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@contract.Id">Detalhes</a>
+                                @if (contract.Contractor.Id.ToString() == User.FindFirstValue(ClaimTypes.SerialNumber))
+                                {
+                                    <a class="btn btn-sm btn-primary" asp-action="CompleteContract" asp-route-id="@contract.Id">Concluir</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="text-center">Nenhum contrato aprovado encontrado.</h1>
+}

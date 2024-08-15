@@ -1,0 +1,59 @@
+﻿@using System.Security.Claims
+@model IEnumerable<HomeEasy.Models.Contract>
+
+@{
+    ViewData["Title"] = "Contratos concluídos";
+}
+
+@if (Model.Any())
+{
+    <div class="container mt-4">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-center">
+                            Contratante
+                        </th>
+                        <th class="text-center">
+                            Contratado
+                        </th>
+                        <th class="text-center">
+                            Trabalho
+                        </th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contract in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Contractor.Name)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Contractee.Name)
+                            </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => contract.Ad.Job)
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@contract.Id">Detalhes</a>
+                                @if ((contract.Contractor.Id.ToString() == User.FindFirstValue(ClaimTypes.SerialNumber) && !contract.ContractorReviewed) ||
+                               (contract.Contractee.Id.ToString() == User.FindFirstValue(ClaimTypes.SerialNumber) && !contract.ContracteeReviewed))
+                                {
+                                    <a class="btn btn-sm btn-primary" asp-controller="Reviews" asp-action="Create" asp-route-id="@contract.Id">Avaliar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <h1 class="text-center">Nenhum contrato concluído encontrado.</h1>
+}

@@ -1,0 +1,53 @@
+﻿@model HomeEasy.Models.Contract
+
+@{
+    ViewData["Title"] = "Excluir Contrato";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-danger text-white text-center">
+            <h2 class="mb-0">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body text-center">
+            <h3 class="text-black">Você tem certeza que deseja excluir este contrato?</h3>
+            <div class="mt-4">
+                <hr />
+                <h4 class="text-dark">Detalhes do Anúncio</h4>
+                <dl class="row justify-content-center">
+                    <dt class="col-sm-4">Título:</dt>
+                    <dd class="col-sm-8">@Model.Ad.Title</dd>
+                    <dt class="col-sm-4">Trabalho:</dt>
+                    <dd class="col-sm-8">@Model.Ad.Job</dd>
+                </dl>
+                <hr />
+                <h4 class="text-dark">Detalhes do Contratante</h4>
+                <dl class="row justify-content-center">
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">@Model.Contractor.Name</dd>
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">@Model.Contractor.Email</dd>
+                    <dt class="col-sm-4">Telefone:</dt>
+                    <dd class="col-sm-8">@Model.Contractor.Phone</dd>
+                </dl>
+                <hr />
+                <h4 class="text-dark">Detalhes do Contratado</h4>
+                <dl class="row justify-content-center">
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">@Model.Contractee.Name</dd>
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">@Model.Contractee.Email</dd>
+                    <dt class="col-sm-4">Telefone:</dt>
+                    <dd class="col-sm-8">@Model.Contractee.Phone</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <form asp-action="Delete" method="post" asp-route-id="@Model.Id" class="d-inline">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Excluir" class="btn btn-danger btn-lg mx-2" />
+            </form>
+            <a onclick="this.disabled=true; history.back();" class="btn btn-secondary btn-lg mx-2">Voltar</a>
+        </div>
+    </div>
+</div>
