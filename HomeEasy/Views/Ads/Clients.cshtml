@@ -15,7 +15,7 @@
     @if (User.IsInRole(UserType.Client.GetDescription()))
     {
         <div class="text-center mb-4">
-            <a asp-controller="Ads" asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
+            <a asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
         </div>
     }
 
@@ -32,12 +32,35 @@
                             <h5 class="card-title">@ad.User.Name</h5>
                             <p class="card-text"><strong>Precisa de:</strong> @ad.Job</p>
                             <hr />
+
+                            @{
+                                var rating = ad.User.Reviews.GetUserRating();
+                                var reviewsCount = ad.User.Reviews.Count;
+
+                                <div class="card-text">
+                                    <strong>Nota:</strong>
+                                    @if (rating == 0)
+                                    {
+                                        <span>Não possui avaliações</span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            @for (int i = 0; i < rating; i++)
+                                            {
+                                                <i class="fa fa-star" style="color: gold; font-size: 25px;">★</i>
+                                            }
+                                            <span class="ml-2">(@reviewsCount)</span>
+                                        </span>
+                                    }
+                                </div>
+                            }
+
                             <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
                             <p class="card-text">
                                 @{
-                                    int maxLength = 100; // Defina o limite de caracteres desejado
-                                    var description = ad.Description.Length > maxLength
-                                    ? ad.Description.Substring(0, maxLength) + "..."
+                                    var description = ad.Description.Length > 100
+                                    ? $"{ad.Description.Substring(0, 100)}..."
                                     : ad.Description;
                                 }
                                 <strong>Descrição:</strong> @description
@@ -45,7 +68,6 @@
                         </div>
                         <div class="mt-auto">
                             @{
-
                                 var message = $"Olá, me chamo {User.Identity.Name}! Vi seu anúncio precisando de {ad.Job} no HomeEasy. Eu sou {ad.Job}! Como posso te ajudar?";
                                 var whatsappUrl = $"https://wa.me/{ad.User.Phone}?text={Uri.EscapeDataString(message)}";
 
@@ -54,15 +76,17 @@
                                     <a href="@whatsappUrl" target="_blank" class="btn btn-sm btn-success">WhatsApp</a>
                                 }
                             }
-                            <a asp-action="Details" asp-controller="Ads"
-                               asp-route-id="@ad.Id"
-                               asp-route-viewType="@UserType.Client"
-                               asp-route-page="@currentPage"
-                               class="btn btn-sm btn-outline-secondary">Detalhes</a>
+
+                            <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
 
                             @if (User.IsInRole(UserType.Admin.GetDescription()))
                             {
-                                <a asp-action="Delete" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            }
+
+                            @if (User.IsInRole(UserType.Worker.GetDescription()) && ad.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
+                            {
+                                <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Contratar</a>
                             }
                         </div>
                     </div>

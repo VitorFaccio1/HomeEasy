@@ -25,19 +25,42 @@
             <div class="col-md-4 d-flex align-items-stretch">
                 <div class="card mb-4 shadow-sm" style="width: 100%; height: 500px; display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="d-flex justify-content-center align-items-center" style="height: 180px; overflow: hidden;">
-                        <img src="@($"data:image/jpeg;base64,{ad.User.Photo}")" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Photo" />
+                        <img src="@($"data:image/jpeg;base64,{ad.User.Photo}")" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Foto de Perfil" />
                     </div>
                     <div class="card-body text-center d-flex flex-column justify-content-between">
                         <div>
                             <h5 class="card-title">@ad.User.Name</h5>
-                            <p class="card-text"><strong>Trabalho:</strong> @ad.Job</p>
+                            <span class="card-text"><strong>Trabalho:</strong> @ad.Job</span>
+
+                            @{
+                                var rating = ad.User.Reviews.GetUserRating();
+                                var reviewsCount = ad.User.Reviews.Count;
+
+                                <div class="card-text">
+                                    <strong>Nota:</strong>
+                                    @if (rating == 0)
+                                    {
+                                        <span>Não possui avaliações</span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            @for (int i = 0; i < rating; i++)
+                                            {
+                                                <i class="fa fa-star" style="color: gold; font-size: 25px;">★</i>
+                                            }
+                                            <span class="ml-2">(@reviewsCount)</span>
+                                        </span>
+                                    }
+                                </div>
+                            }
+
                             <hr />
                             <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
                             <p class="card-text">
                                 @{
-                                    int maxLength = 100; // Defina o limite de caracteres desejado
-                                    var description = ad.Description.Length > maxLength
-                                    ? ad.Description.Substring(0, maxLength) + "..."
+                                    var description = ad.Description.Length > 100
+                                    ? $"{ad.Description.Substring(0, 100)}..."
                                     : ad.Description;
                                 }
                                 <strong>Descrição:</strong> @description
@@ -53,15 +76,17 @@
                                     <a href="@whatsappUrl" target="_blank" class="btn btn-sm btn-success">WhatsApp</a>
                                 }
                             }
-                            <a asp-action="Details" asp-controller="Ads"
-                               asp-route-id="@ad.Id"
-                               asp-route-viewType="@UserType.Worker"
-                               asp-route-page="@currentPage"
-                               class="btn btn-sm btn-outline-secondary">Detalhes</a>
+
+                            <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
 
                             @if (User.IsInRole(UserType.Admin.GetDescription()))
                             {
-                                <a asp-action="Delete" asp-controller="Ads" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            }
+
+                            @if (User.IsInRole(UserType.Client.GetDescription()) && ad.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
+                            {
+                                <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Contratar</a>
                             }
                         </div>
                     </div>
