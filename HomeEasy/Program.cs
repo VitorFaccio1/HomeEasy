@@ -14,6 +14,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAdService, AdService>();
+builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
