@@ -62,4 +62,6 @@ public class User
 
     [Required(ErrorMessage = "Tipo de usuário é obrigatório")]
     public UserType Type { get; set; }
+
+    public List<Review> Reviews { get; set; } = [];
 }
