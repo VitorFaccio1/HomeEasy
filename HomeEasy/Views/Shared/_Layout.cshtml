@@ -1,5 +1,6 @@
 ﻿@using HomeEasy.Enums
 @using HomeEasy.Extensions
+@using System.Security.Claims
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +40,40 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Jobs" asp-action="Index">Trabalhos</a>
                                 </li>
                             }
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Ads" asp-action="Workers">Trabalhadores</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Anúncios
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="Ads" asp-action="Workers">Trabalhadores</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="Ads" asp-action="Clients">Clientes</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Ads" asp-action="Clients">Clientes</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Meus Contratos
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Contracts" asp-action="Completeds">
+                                            Concluídos
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Contracts" asp-action="Approveds">
+                                            Aprovados
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Contracts" asp-action="Pendings">
+                                            Pendentes
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Details">Meu perfil</a>
