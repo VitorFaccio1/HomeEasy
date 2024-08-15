@@ -12,13 +12,9 @@ namespace HomeEasy.Controllers;
 public sealed class UsersController : Controller
 {
     private readonly IUserService _userService;
-    private readonly IAdService _adService;
 
-    public UsersController(
-         IAdService adService,
-        IUserService userService)
+    public UsersController(IUserService userService)
     {
-        _adService = adService;
         _userService = userService;
     }
 
@@ -97,45 +93,11 @@ public sealed class UsersController : Controller
     }
 
     [Authorize]
-    public async Task<IActionResult> Details()
+    public async Task<IActionResult> Details(string id)
     {
-        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
+        var user = await _userService.GetUserByIdAsync(id);
 
         return View(user);
-    }
-
-    [Authorize]
-    public async Task<IActionResult> MyAds(int page = 1)
-    {
-        var size = 3;
-
-        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
-
-        var userAds = await _adService.GetUserNotExpiredAdsAsync(page, size, userId);
-
-        var userAdsTotalCount = await _adService.GetUserNotExpiredAdsTotalCountAsync(userId);
-
-        ViewBag.TotalPages = (int)Math.Ceiling(userAdsTotalCount / (double)size);
-        ViewBag.CurrentPage = page;
-
-        return View(userAds);
-    }
-
-    [Authorize]
-    public async Task<IActionResult> MyExpiredAds(int page = 1)
-    {
-        var size = 3;
-
-        var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
-
-        var userExpiredAds = await _adService.GetUserExpiredAdsAsync(page, size, userId);
-
-        var userExpiredAdsTotalCount = await _adService.GetUserExpiredAdsTotalCountAsync(userId);
-
-        ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAdsTotalCount / (double)size);
-        ViewBag.CurrentPage = page;
-
-        return View(userExpiredAds);
     }
 
     [Authorize]
