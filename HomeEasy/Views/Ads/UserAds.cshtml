@@ -1,14 +1,23 @@
-﻿@model IEnumerable<HomeEasy.Models.Ad>
+﻿@using System.Security.Claims
+@model IEnumerable<HomeEasy.Models.Ad>
 
 @{
-    ViewData["Title"] = "Meus Anúncios";
     var currentPage = ViewBag.CurrentPage ?? 1;
     var totalPages = ViewBag.TotalPages ?? 1;
+
+    var userAccount = User.FindFirstValue(ClaimTypes.SerialNumber) == ViewBag.User.Id.ToString();
+
+    ViewData["Title"] = userAccount ? "Meus Anúncios" : $"Anúncios de {ViewBag.User.Name}";
 }
 
 <div class="container mt-5">
     <h1 class="text-center mb-4">@ViewData["Title"]</h1>
-
+    @if (userAccount)
+    {
+        <div class="text-center mb-4">
+            <a asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
+        </div>
+    }
     @if (Model.Any())
     {
         <div class="table-responsive">
@@ -24,18 +33,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var ad in Model)
                     {
                         <tr>
-                            <td class="text-nowrap" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;" title="@item.Title">@item.Title</td>
-                            <td class="text-nowrap" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="@item.Description">@item.Description</td>
-                            <td class="text-nowrap">@item.Job</td>
-                            <td class="text-nowrap">@item.StartDate.ToString("dd/MM/yyyy")</td>
-                            <td class="text-nowrap">@item.EndDate.ToString("dd/MM/yyyy")</td>
+                            <td class="text-nowrap" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;" title="@ad.Title">@ad.Title</td>
+                            <td class="text-nowrap" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="@ad.Description">@ad.Description</td>
+                            <td class="text-nowrap">@ad.Job</td>
+                            <td class="text-nowrap">@ad.StartDate.ToString("dd/MM/yyyy")</td>
+                            <td class="text-nowrap">@ad.EndDate.ToString("dd/MM/yyyy")</td>
                             <td class="text-center">
-                                <a asp-controller="Ads" asp-action="Edit" asp-route-page="@ViewBag.CurrentPage" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
-                                <a asp-controller="Ads" asp-action="Details" asp-route-page="@ViewBag.CurrentPage" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
-                                <a asp-controller="Ads" asp-action="Delete" asp-route-page="@ViewBag.CurrentPage" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Excluir</a>
+                                <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
+                                @if (userAccount)
+                                {
+                                    <a asp-action="Edit" asp-route-page="@ViewBag.CurrentPage" asp-route-id="@ad.Id" class="btn btn-primary btn-sm">Editar</a>
+                                    <a asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-danger btn-sm">Excluir</a>
+                                }
                             </td>
                         </tr>
                     }
@@ -81,6 +93,10 @@
     </nav>
 
     <div class="text-center mt-4">
-        <a asp-action="MyExpiredAds" class="btn btn-secondary">Ver Anúncios Expirados</a>
+        @if (userAccount)
+        {
+            <a asp-action="MyExpiredAds" class="btn btn-primary">Ver Anúncios Expirados</a>
+        }
+        <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
     </div>
 </div>
