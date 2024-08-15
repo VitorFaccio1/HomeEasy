@@ -14,8 +14,8 @@ public sealed class Review
     public DateOnly Date { get; set; }
 
     [Required(ErrorMessage = "O comentário é obrigatório.")]
-    [StringLength(500, ErrorMessage = "O comentário deve ter no máximo 500 caracteres.")]
+    [StringLength(100, ErrorMessage = "O comentário deve ter no máximo 100 caracteres.")]
     public string Comment { get; set; }
 
-    public User? Reviewer { get; set; }
+    public string? ValuerName { get; set; }
 }
