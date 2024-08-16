@@ -27,7 +27,7 @@ public class AdsController : Controller
 
     public async Task<IActionResult> Clients(string job, int page = 1)
     {
-        var size = 9;
+        var size = 6;
 
         var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size, job);
 
@@ -46,7 +46,7 @@ public class AdsController : Controller
 
     public async Task<IActionResult> Workers(string job, int page = 1)
     {
-        var size = 3;
+        var size = 6;
 
         var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size, job);
 
@@ -120,7 +120,7 @@ public class AdsController : Controller
         {
             await _adService.EditAdAsync(ad);
 
-            return RedirectToAction("MyAds", "Ads", new { Page = page });
+            return RedirectToAction("UserAds", "Ads", new { Id = User.FindFirstValue(ClaimTypes.SerialNumber), Page = page });
         }
 
         return View(ad);
@@ -146,7 +146,7 @@ public class AdsController : Controller
             await _adService.DeleteAdAsync(ad);
 
             return ad.EndDate >= DateTime.Now
-                ? RedirectToAction("UserAds", "Ads")
+                ? RedirectToAction("UserAds", "Ads", new { Id = User.FindFirstValue(ClaimTypes.SerialNumber) })
                 : RedirectToAction("MyExpiredAds", "Ads");
         }
 
