@@ -25,42 +25,42 @@ public class AdsController : Controller
         _userService = userService;
     }
 
-    public async Task<IActionResult> Clients(string job, int page = 1)
+    public async Task<IActionResult> Clients(string job = "", int rating = 0, int page = 1)
     {
-        var size = 6;
+        var size = 3;
 
-        var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size, job);
-
-        var clientAdsTotalCount = clientsAds.Any()
-            ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client, job)
-            : 0;
+        var clientsAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, job, rating);
 
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
-        ViewBag.TotalPages = (int)Math.Ceiling(clientAdsTotalCount / (double)size);
+        ViewBag.TotalPages = (int)Math.Ceiling(clientsAds.TotalCount / (double)size);
+
+        if (rating != 0)
+            ViewBag.Rating = rating;
+
         if (!string.IsNullOrEmpty(job))
             ViewBag.Job = job;
 
-        return View(clientsAds);
+        return View(clientsAds.Ads);
     }
 
-    public async Task<IActionResult> Workers(string job, int page = 1)
+    public async Task<IActionResult> Workers(string job = "", int rating = 0, int page = 1)
     {
-        var size = 6;
+        var size = 3;
 
-        var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size, job);
-
-        var workersAdsTotalCount = workerAds.Any()
-            ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker, job)
-            : 0;
+        var workerAds = await _adService.GetAdsWithFiltersAsync(UserType.Worker, page, size, job, rating);
 
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
-        ViewBag.TotalPages = (int)Math.Ceiling(workersAdsTotalCount / (double)size);
+        ViewBag.TotalPages = (int)Math.Ceiling(workerAds.TotalCount / (double)size);
+
+        if (rating != 0)
+            ViewBag.Rating = rating;
+
         if (!string.IsNullOrEmpty(job))
             ViewBag.Job = job;
 
-        return View(workerAds);
+        return View(workerAds.Ads);
     }
 
     public async Task<IActionResult> Details(Guid? id)
@@ -159,15 +159,13 @@ public class AdsController : Controller
 
         var user = await _userService.GetUserByIdAsync(id);
 
-        var userAds = await _adService.GetUserNotExpiredAdsAsync(page, size, id);
+        var userAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, userId: id);
 
-        var userAdsTotalCount = userAds.Any() ? await _adService.GetUserNotExpiredAdsTotalCountAsync(id) : 0;
-
-        ViewBag.TotalPages = (int)Math.Ceiling(userAdsTotalCount / (double)size);
+        ViewBag.TotalPages = (int)Math.Ceiling(userAds.TotalCount / (double)size);
         ViewBag.CurrentPage = page;
         ViewBag.User = user;
 
-        return View(userAds);
+        return View(userAds.Ads);
     }
 
     public async Task<IActionResult> MyExpiredAds(int page = 1)
@@ -176,13 +174,11 @@ public class AdsController : Controller
 
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var userExpiredAds = await _adService.GetUserExpiredAdsAsync(page, size, userId);
+        var userExpiredAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, expired: true, userId: userId);
 
-        var userExpiredAdsTotalCount = userExpiredAds.Any() ? await _adService.GetUserExpiredAdsTotalCountAsync(userId) : 0;
-
-        ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAdsTotalCount / (double)size);
+        ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAds.TotalCount / (double)size);
         ViewBag.CurrentPage = page;
 
-        return View(userExpiredAds);
+        return View(userExpiredAds.Ads);
     }
 }

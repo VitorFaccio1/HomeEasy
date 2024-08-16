@@ -27,74 +27,19 @@ namespace HomeEasy.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size, string job)
+        public async Task<(List<Ad> Ads, int TotalCount)> GetAdsWithFiltersAsync(UserType userType, int page = 1, int size = 6, string job = "", int rating = 0, bool expired = false, string userId = "")
         {
-            var query = _context.Ads
-                .Include(ad => ad.User.Reviews)
-                .Where(ad => ad.User.Type == UserType.Client && ad.EndDate >= DateTime.Now);
+            var query = FilterAdsQuery(job, rating, expired, userType, userId);
 
-            if (!string.IsNullOrEmpty(job))
-                query = query.Where(ad => ad.Job == job);
+            int totalCount = await query.CountAsync();
 
-            return await query
+            var ads = await query
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
+
+            return (ads, totalCount);
         }
-
-        public async Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size, string job)
-        {
-            var query = _context.Ads
-                .Include(ad => ad.User.Reviews)
-                .Where(ad => ad.User.Type == UserType.Worker && ad.EndDate >= DateTime.Now);
-
-            if (!string.IsNullOrEmpty(job))
-                query = query.Where(ad => ad.Job == job);
-
-            return await query
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
-        }
-
-        public async Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType, string job)
-        {
-            var query = _context.Ads.Include(ad => ad.User)
-                .Where(ad => ad.EndDate >= DateTime.Now && ad.User.Type == userType);
-
-            if (!string.IsNullOrEmpty(job))
-                query = query.Where(ad => ad.Job == job);
-
-            return await query.CountAsync();
-        }
-
-        public async Task<List<Ad>> GetUserNotExpiredAdsAsync(int page, int size, string userId) =>
-            await _context.Ads
-                .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate >= DateTime.Now)
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
-
-        public async Task<List<Ad>> GetUserExpiredAdsAsync(int page, int size, string userId) =>
-            await _context.Ads
-                .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate < DateTime.Now)
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync();
-
-        public async Task<int> GetUserNotExpiredAdsTotalCountAsync(string userId) =>
-            await _context.Ads
-                .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate >= DateTime.Now)
-                .CountAsync();
-
-        public async Task<int> GetUserExpiredAdsTotalCountAsync(string userId) =>
-            await _context.Ads
-                .Include(ad => ad.User)
-                .Where(ad => ad.User.Id.ToString() == userId && ad.EndDate < DateTime.Now)
-                .CountAsync();
 
         public async Task<Ad?> GetAdAsync(Guid? id) =>
             await _context.Ads.Include(ad => ad.User.Reviews).FirstOrDefaultAsync(m => m.Id == id);
@@ -120,6 +65,27 @@ namespace HomeEasy.Services
 
                 await _context.SaveChangesAsync();
             }
+        }
+
+        private IQueryable<Ad> FilterAdsQuery(string job, int rating, bool expired, UserType userType, string userId)
+        {
+            IQueryable<Ad> query = _context.Ads.Include(ad => ad.User.Reviews);
+
+            query = string.IsNullOrEmpty(userId)
+                ? query.Where(ad => ad.User.Type == userType)
+                : query.Where(ad => ad.User.Id.ToString() == userId);
+
+            query = !expired
+                ? query.Where(ad => ad.EndDate >= DateTime.Now)
+                : query.Where(ad => ad.EndDate < DateTime.Now);
+
+            if (!string.IsNullOrEmpty(job))
+                query = query.Where(ad => ad.Job == job);
+
+            if (rating != 0)
+                query = query.Where(ad => (int)ad.User.Reviews.Average(review => review.Rating) == rating);
+
+            return query;
         }
     }
 }

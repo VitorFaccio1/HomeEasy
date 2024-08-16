@@ -19,23 +19,51 @@
         </div>
     }
 
-    <form asp-action="Clients" method="get" class="mb-4">
-        <div class="input-group">
-            <select name="job" class="form-control">
-                <option value="">Todas as categorias</option>
-                @foreach (var job in ViewBag.Jobs as List<Job>)
-                {
-                    if (ViewBag.Job != job.Name)
+    <form asp-action="Clients" class="mb-4">
+        <div class="d-flex align-items-end">
+            <div class="form-group mr-3">
+                <label for="job"><strong>Categoria:</strong></label>
+                <select id="job" name="job" class="form-control" style="max-width: 170px;">
+                    <option value="">Todas as categorias</option>
+                    @foreach (var job in ViewBag.Jobs as List<Job>)
                     {
-                        <option value="@job.Name">@job.Name</option>
+                        if (ViewBag.Job != job.Name)
+                        {
+                            <option value="@job.Name">@job.Name</option>
+                        }
+                        else
+                        {
+                            <option selected value="@job.Name">@job.Name</option>
+                        }
                     }
-                    else
+                </select>
+            </div>
+
+            <label>&nbsp;</label>
+            <label>&nbsp;</label>
+
+            <div class="form-group mr-3">
+                <label for="rating"><strong>Avaliação:</strong></label>
+                <select id="rating" name="rating" class="form-control" style="max-width: 170px;">
+                    <option value="">Todas as avaliações</option>
+                    @for (int i = 1; i <= 5; i++)
                     {
-                        <option selected value="@job.Name">@job.Name</option>
+                        if (ViewBag.Rating != i)
+                        {
+                            <option value="@i">@i Estrela</option>
+                        }
+                        else
+                        {
+                            <option selected value="@i">@i Estrela</option>
+                        }
                     }
-                }
-            </select>
-            <div class="input-group-append">
+                </select>
+            </div>
+
+            <label>&nbsp;</label>
+            <label>&nbsp;</label>
+
+            <div class="form-group">
                 <button class="btn btn-primary" type="submit">Filtrar</button>
             </div>
         </div>
@@ -53,16 +81,11 @@
                         </div>
                         <div class="card-body text-center d-flex flex-column justify-content-between">
                             <div>
-                                <h5 class="card-title">@ad.User.Name</h5>
-                                <p class="card-text"><strong>Precisa de:</strong> @ad.Job</p>
-                                <hr />
-
                                 @{
                                     var rating = ad.User.Reviews.GetUserRating();
                                     var reviewsCount = ad.User.Reviews.Count;
 
                                     <div class="card-text">
-                                        <strong>Nota:</strong>
                                         @if (rating == 0)
                                         {
                                             <span>Não possui avaliações</span>
@@ -79,6 +102,10 @@
                                         }
                                     </div>
                                 }
+                                <h5 class="card-title">@ad.User.Name</h5>
+                                <p class="card-text"><strong>Precisa de:</strong> @ad.Job</p>
+                                <hr />
+
 
                                 <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
                                 <p class="card-text">
@@ -101,15 +128,16 @@
 
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                @if (ViewBag.CurrentPage > 1)
+                @if (currentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@(ViewBag.CurrentPage - 1)">Anterior</a>
+                        <a class="page-link" asp-action="Clients"
+                           asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job" asp-route-page="@(currentPage - 1)">Anterior</a>
                     </li>
                 }
-                @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                @for (var i = 1; i <= totalPages; i++)
                 {
-                    if (i == ViewBag.CurrentPage)
+                    if (i == currentPage)
                     {
                         <li class="page-item active" aria-current="page">
                             <span class="page-link">@i</span>
@@ -118,14 +146,17 @@
                     else
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@i">@i</a>
+                            <a class="page-link" asp-action="Clients"
+                               asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job" asp-route-page="@i">@i</a>
                         </li>
                     }
                 }
-                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                @if (currentPage < totalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@(ViewBag.CurrentPage + 1)">Próximo</a>
+                        <a class="page-link" asp-action="Clients"
+                           asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job"
+                           asp-route-page="@(currentPage + 1)">Próximo</a>
                     </li>
                 }
             </ul>

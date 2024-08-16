@@ -19,27 +19,56 @@
         </div>
     }
 
-    <form asp-action="Workers" method="get" class="mb-4">
-        <div class="input-group">
-            <select name="job" class="form-control">
-                <option value="">Todas as categorias</option>
-                @foreach (var job in ViewBag.Jobs as List<Job>)
-                {
-                    if (ViewBag.Job != job.Name)
+    <form asp-action="Workers" class="mb-4">
+        <div class="d-flex align-items-end">
+            <div class="form-group mr-3">
+                <label for="job"><strong>Categoria:</strong></label>
+                <select id="job" name="job" class="form-control" style="max-width: 170px;">
+                    <option value="">Todas as categorias</option>
+                    @foreach (var job in ViewBag.Jobs as List<Job>)
                     {
-                        <option value="@job.Name">@job.Name</option>
+                        if (ViewBag.Job != job.Name)
+                        {
+                            <option value="@job.Name">@job.Name</option>
+                        }
+                        else
+                        {
+                            <option selected value="@job.Name">@job.Name</option>
+                        }
                     }
-                    else
+                </select>
+            </div>
+
+            <label>&nbsp;</label>
+            <label>&nbsp;</label>
+
+            <div class="form-group mr-3">
+                <label for="rating"><strong>Avaliação:</strong></label>
+                <select id="rating" name="rating" class="form-control" style="max-width: 170px;">
+                    <option value="">Todas as avaliações</option>
+                    @for (int i = 1; i <= 5; i++)
                     {
-                        <option selected value="@job.Name">@job.Name</option>
+                        if (ViewBag.Rating != i)
+                        {
+                            <option value="@i">@i Estrela</option>
+                        }
+                        else
+                        {
+                            <option selected value="@i">@i Estrela</option>
+                        }
                     }
-                }
-            </select>
-            <div class="input-group-append">
+                </select>
+            </div>
+
+            <label>&nbsp;</label>
+            <label>&nbsp;</label>
+
+            <div class="form-group">
                 <button class="btn btn-primary" type="submit">Filtrar</button>
             </div>
         </div>
     </form>
+
 
     @if (Model.Any())
     {
@@ -53,15 +82,11 @@
                         </div>
                         <div class="card-body text-center d-flex flex-column justify-content-between">
                             <div>
-                                <h5 class="card-title">@ad.User.Name</h5>
-                                <span class="card-text"><strong>Trabalho:</strong> @ad.Job</span>
-
                                 @{
                                     var rating = ad.User.Reviews.GetUserRating();
                                     var reviewsCount = ad.User.Reviews.Count;
 
                                     <div class="card-text">
-                                        <strong>Nota:</strong>
                                         @if (rating == 0)
                                         {
                                             <span>Não possui avaliações</span>
@@ -78,7 +103,8 @@
                                         }
                                     </div>
                                 }
-
+                                <h5 class="card-title">@ad.User.Name</h5>
+                                <span class="card-text"><strong>Trabalho:</strong> @ad.Job</span>
                                 <hr />
                                 <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
                                 <p class="card-text">
@@ -104,8 +130,8 @@
                 @if (currentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Workers" asp-route-job="@ViewBag.Job"
-                           asp-route-page="@(currentPage - 1)">Anterior</a>
+                        <a class="page-link" asp-action="Workers"
+                           asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job" asp-route-page="@(currentPage - 1)">Anterior</a>
                     </li>
                 }
                 @for (var i = 1; i <= totalPages; i++)
@@ -119,14 +145,16 @@
                     else
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-action="Workers" asp-route-job="@ViewBag.Job" asp-route-page="@i">@i</a>
+                            <a class="page-link" asp-action="Workers"
+                               asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job" asp-route-page="@i">@i</a>
                         </li>
                     }
                 }
                 @if (currentPage < totalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Workers" asp-route-job="@ViewBag.Job"
+                        <a class="page-link" asp-action="Workers"
+                           asp-route-rating="@ViewBag.Rating" asp-route-job="@ViewBag.Job"
                            asp-route-page="@(currentPage + 1)">Próximo</a>
                     </li>
                 }
