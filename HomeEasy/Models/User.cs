@@ -17,7 +17,6 @@ public class User
     [Display(Name = "Senha")]
     [Required(ErrorMessage = "Senha é obrigatória")]
     [DataType(DataType.Password)]
-    [MaxLength(50)]
     [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,50}$", ErrorMessage = "A senha deve ter entra 8 caracteres e 50 caracteres, uma letra maiúscula, uma letra minúscula, um dígito e um caractere especial.")]
     public string Password { get; set; }
 
