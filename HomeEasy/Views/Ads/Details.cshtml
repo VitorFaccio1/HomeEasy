@@ -65,12 +65,15 @@
                     {
                         <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
                     }
-                    <a asp-action="Details" asp-controller="Users" asp-route-id="@Model.User.Id" class="btn btn-primary">Ver perfil</a>
-                    @if (!User.IsInRole(Model.User.Type.GetDescription()) && Model.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
+                    @if (Model.User.Id.ToString() != User.FindFirstValue(ClaimTypes.SerialNumber))
                     {
-                        <form asp-action="Create" asp-route-adId="@Model.Id" asp-controller="Contracts" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger">Contratar</button>
-                        </form>
+                        <a asp-action="Details" asp-controller="Users" asp-route-id="@Model.User.Id" class="btn btn-primary">Ver perfil</a>
+                        if (!User.IsInRole(Model.User.Type.GetDescription()))
+                        {
+                            <form asp-action="Create" asp-route-adId="@Model.Id" asp-controller="Contracts" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Contratar</button>
+                            </form>
+                        }
                     }
                 </div>
             </div>
