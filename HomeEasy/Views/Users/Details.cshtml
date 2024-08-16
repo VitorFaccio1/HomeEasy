@@ -98,7 +98,10 @@
         </div>
     </div>
     <br />
-    <div class="text-center">
-        <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
-    </div>
+    @if (!userAccount)
+    {
+        <div class="text-center">
+            <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
+        </div>
+    }
 </div>
