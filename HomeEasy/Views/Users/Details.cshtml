@@ -1,11 +1,10 @@
 ﻿@model User
+@using HomeEasy.Enums
 @using HomeEasy.Extensions
 @using System.Security.Claims
 
 @{
     ViewData["Title"] = "Detalhes do Usuário";
-
-    var formattedPhoneNumber = @Model.Phone.FormatPhoneNumber();
 
     var rating = @Model.Reviews.GetUserRating();
     var reviewsCount = Model.Reviews.Count;
@@ -54,7 +53,7 @@
                         </dd>
 
                         <dt class="col-sm-4">Telefone:</dt>
-                        <dd class="col-sm-8">@formattedPhoneNumber</dd>
+                        <dd class="col-sm-8">@Model.Phone</dd>
 
                         <dt class="col-sm-4">País:</dt>
                         <dd class="col-sm-8">@Model.Country</dd>
@@ -85,9 +84,12 @@
                 }
                 else
                 {
-                    <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                    if ((User.IsInRole(UserType.Worker.GetDescription()) && Model.Type != UserType.Worker)
+                    || (User.IsInRole(UserType.Client.GetDescription()) && Model.Type != UserType.Client))
+                    {
+                        <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
+                    }
                 }
-
                 <a asp-controller="Ads" asp-action="UserAds" asp-route-id="@Model.Id" class="btn btn-primary">
                     @(userAccount ? "Meus anúncios" : "Anúncios")
                 </a>
