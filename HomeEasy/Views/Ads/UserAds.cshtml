@@ -4,8 +4,9 @@
 @{
     var currentPage = ViewBag.CurrentPage ?? 1;
     var totalPages = ViewBag.TotalPages ?? 1;
+    var userId = User.FindFirstValue(ClaimTypes.SerialNumber);
 
-    var userAccount = User.FindFirstValue(ClaimTypes.SerialNumber) == ViewBag.User.Id.ToString();
+    var userAccount = userId == ViewBag.User.Id.ToString();
 
     ViewData["Title"] = userAccount ? "Meus Anúncios" : $"Anúncios de {ViewBag.User.Name}";
 }
@@ -54,49 +55,52 @@
                 </tbody>
             </table>
         </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="UserAds" asp-route-id="@userId" asp-route-page="@(currentPage - 1)">Anterior</a>
+                    </li>
+                }
+                @for (var i = 1; i <= totalPages; i++)
+                {
+                    if (i == currentPage)
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="UserAds" asp-route-id="@userId" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                }
+                @if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="UserAds" asp-route-id="@userId" asp-route-page="@(currentPage + 1)">Próximo</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     }
     else
     {
         <h3 class="text-center">Nenhum anúncio encontrado.</h3>
     }
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            @if (currentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="MyAds" asp-route-page="@(currentPage - 1)">Anterior</a>
-                </li>
-            }
-            @for (var i = 1; i <= totalPages; i++)
-            {
-                if (i == currentPage)
-                {
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link">@i</span>
-                    </li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="MyAds" asp-route-page="@i">@i</a>
-                    </li>
-                }
-            }
-            @if (currentPage < totalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="MyAds" asp-route-page="@(currentPage + 1)">Próximo</a>
-                </li>
-            }
-        </ul>
-    </nav>
-
     <div class="text-center mt-4">
         @if (userAccount)
         {
+            <a asp-controller="Users" asp-action="Details" asp-route-id="@userId" class="btn btn-secondary">Voltar para perfil</a>
             <a asp-action="MyExpiredAds" class="btn btn-primary">Ver Anúncios Expirados</a>
         }
-        <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
+        else
+        {
+            <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
+        }
     </div>
 </div>
