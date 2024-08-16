@@ -10,9 +10,4 @@ public static class StringExtensions
                           .Replace("-", "")
                           .Replace("(", "")
                           .Replace(")", "");
-
-    public static string FormatPhoneNumber(this string phoneNumber) =>
-        string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length != 13
-            ? phoneNumber
-            : $"+{phoneNumber[..2]} ({phoneNumber.Substring(2, 2)}) {phoneNumber.Substring(4, 5)}-{phoneNumber[9..]}";
 }

@@ -6,9 +6,8 @@
 @{
     ViewData["Title"] = "Detalhes do Anúncio";
 
-    var formattedPhoneNumber = Model.User.Phone.FormatPhoneNumber();
     var message = $"Olá, me chamo {User.Identity.Name}! Vi seu anúncio de {Model.Job} no HomeEasy. Poderia me ajudar?";
-    var whatsappUrl = $"https://wa.me/{Model.User.Phone}?text={Uri.EscapeDataString(message)}";
+    var whatsappUrl = $"https://wa.me/{Model.User.Phone.NormalizePhoneNumber()}?text={Uri.EscapeDataString(message)}";
 }
 
 <div class="container">
@@ -27,7 +26,6 @@
                                 var reviewsCount = Model.User.Reviews.Count;
 
                                 <div class="card-text">
-                                    <strong>Nota:</strong>
                                     @if (rating == 0)
                                     {
                                         <span>Não possui avaliações</span>
@@ -49,7 +47,7 @@
                             <h5>@Model.User.Name</h5>
                             <p class="text-muted">E-mail: @Model.User.Email</p>
                             <p class="text-muted">Gênero: @Model.User.Gender</p>
-                            <p class="text-muted">Telefone: @formattedPhoneNumber</p>
+                            <p class="text-muted">Telefone: @Model.User.Phone</p>
                             <p class="text-muted">Localidade: @Model.User.City, @Model.User.State, @Model.User.Country</p>
                         </div>
                     </div>

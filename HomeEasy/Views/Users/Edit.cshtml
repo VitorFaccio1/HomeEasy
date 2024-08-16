@@ -3,8 +3,6 @@
 
 @{
     ViewData["Title"] = "Editar Usuário";
-
-    var formattedPhoneNumber = @Model.Phone.FormatPhoneNumber();
 }
 
 <div class="container mt-4">
@@ -32,7 +30,7 @@
                 <div class="row mb-3">
                     <div class="col-md-12 text-center">
                         <h5 class="card-title">Telefone</h5>
-                        <input type="text" asp-for="Phone" class="form-control" value="@formattedPhoneNumber" placeholder="+55 (11) 99999-9999" />
+                        <input type="text" asp-for="Phone" class="form-control" value="@Model.Phone" placeholder="+55 (11) 99999-9999" />
                         <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
                 </div>
