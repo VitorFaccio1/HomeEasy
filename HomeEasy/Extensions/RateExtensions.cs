@@ -9,6 +9,6 @@ public static class RateExtensions
         if (!reviews?.Any() ?? true)
             return 0;
 
-        return (int)Math.Round(reviews.Select(review => review.Rating).Average());
+        return (int)reviews.Select(review => review.Rating).Average();
     }
 }
