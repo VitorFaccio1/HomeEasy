@@ -1,4 +1,5 @@
-﻿@model IEnumerable<HomeEasy.Models.Ad>
+﻿@using System.Security.Claims
+@model IEnumerable<HomeEasy.Models.Ad>
 
 @{
     ViewData["Title"] = "Meus anúncios expirados";
@@ -80,6 +81,6 @@
     }
 
     <div class="text-center mt-4">
-        <button onclick="this.disabled=true; history.back();" class="btn btn-secondary">Voltar</button>
+        <a asp-action="UserAds" asp-route-id="@User.FindFirstValue(ClaimTypes.SerialNumber)" class="btn btn-secondary">Voltar</a>
     </div>
 </div>
