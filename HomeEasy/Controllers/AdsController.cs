@@ -25,30 +25,40 @@ public class AdsController : Controller
         _userService = userService;
     }
 
-    public async Task<IActionResult> Clients(int page = 1)
+    public async Task<IActionResult> Clients(string job, int page = 1)
     {
         var size = 9;
 
-        var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size);
+        var clientsAds = await _adService.GetClientsNotExpiredAdsAsync(page, size, job);
 
-        var clientAdsTotalCount = clientsAds.Any() ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client) : 0;
+        var clientAdsTotalCount = clientsAds.Any()
+            ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Client, job)
+            : 0;
 
         ViewBag.CurrentPage = page;
+        ViewBag.Jobs = await _jobService.GetJobsAsync();
         ViewBag.TotalPages = (int)Math.Ceiling(clientAdsTotalCount / (double)size);
+        if (!string.IsNullOrEmpty(job))
+            ViewBag.Job = job;
 
         return View(clientsAds);
     }
 
-    public async Task<IActionResult> Workers(int page = 1)
+    public async Task<IActionResult> Workers(string job, int page = 1)
     {
-        var size = 9;
+        var size = 3;
 
-        var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size);
+        var workerAds = await _adService.GetWorkersNotExpiredAdsAsync(page, size, job);
 
-        var workersAdsTotalCount = workerAds.Any() ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker) : 0;
+        var workersAdsTotalCount = workerAds.Any()
+            ? await _adService.GetNotExpiredAdsTotalCountByUserTypeAsync(UserType.Worker, job)
+            : 0;
 
         ViewBag.CurrentPage = page;
+        ViewBag.Jobs = await _jobService.GetJobsAsync();
         ViewBag.TotalPages = (int)Math.Ceiling(workersAdsTotalCount / (double)size);
+        if (!string.IsNullOrEmpty(job))
+            ViewBag.Job = job;
 
         return View(workerAds);
     }

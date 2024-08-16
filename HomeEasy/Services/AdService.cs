@@ -27,23 +27,46 @@ namespace HomeEasy.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size) =>
-            await _context.Ads.Include(ad => ad.User.Reviews)
-                .Where(ad => ad.User.Type == UserType.Client && ad.EndDate >= DateTime.Now)
+        public async Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size, string job)
+        {
+            var query = _context.Ads
+                .Include(ad => ad.User.Reviews)
+                .Where(ad => ad.User.Type == UserType.Client && ad.EndDate >= DateTime.Now);
+
+            if (!string.IsNullOrEmpty(job))
+                query = query.Where(ad => ad.Job == job);
+
+            return await query
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
+        }
 
-        public async Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size) =>
-            await _context.Ads.Include(ad => ad.User.Reviews)
-                .Where(ad => ad.User.Type == UserType.Worker && ad.EndDate >= DateTime.Now)
+        public async Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size, string job)
+        {
+            var query = _context.Ads
+                .Include(ad => ad.User.Reviews)
+                .Where(ad => ad.User.Type == UserType.Worker && ad.EndDate >= DateTime.Now);
+
+            if (!string.IsNullOrEmpty(job))
+                query = query.Where(ad => ad.Job == job);
+
+            return await query
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
+        }
 
-        public async Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType) =>
-            await _context.Ads.Include(ad => ad.User)
-                .Where(ad => ad.EndDate >= DateTime.Now && ad.User.Type == userType).CountAsync();
+        public async Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType, string job)
+        {
+            var query = _context.Ads.Include(ad => ad.User)
+                .Where(ad => ad.EndDate >= DateTime.Now && ad.User.Type == userType);
+
+            if (!string.IsNullOrEmpty(job))
+                query = query.Where(ad => ad.Job == job);
+
+            return await query.CountAsync();
+        }
 
         public async Task<List<Ad>> GetUserNotExpiredAdsAsync(int page, int size, string userId) =>
             await _context.Ads

@@ -7,11 +7,11 @@ public interface IAdService
 {
     Task CreateAsync(Ad ad, User user);
 
-    Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size);
+    Task<List<Ad>> GetClientsNotExpiredAdsAsync(int page, int size, string job);
 
-    Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size);
+    Task<List<Ad>> GetWorkersNotExpiredAdsAsync(int page, int size, string job);
 
-    Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType);
+    Task<int> GetNotExpiredAdsTotalCountByUserTypeAsync(UserType userType, string job);
 
     Task<List<Ad>> GetUserNotExpiredAdsAsync(int page, int size, string userId);
 

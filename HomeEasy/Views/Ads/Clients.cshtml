@@ -19,93 +19,120 @@
         </div>
     }
 
-    <div class="row">
-        @foreach (var ad in Model)
-        {
-            <div class="col-md-4 d-flex align-items-stretch">
-                <div class="card mb-4 shadow-sm" style="width: 100%; height: 500px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div class="d-flex justify-content-center align-items-center" style="height: 180px; overflow: hidden;">
-                        <img src="@($"data:image/jpeg;base64,{ad.User.Photo}")" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Photo" />
-                    </div>
-                    <div class="card-body text-center d-flex flex-column justify-content-between">
-                        <div>
-                            <h5 class="card-title">@ad.User.Name</h5>
-                            <p class="card-text"><strong>Precisa de:</strong> @ad.Job</p>
-                            <hr />
+    <form asp-action="Clients" method="get" class="mb-4">
+        <div class="input-group">
+            <select name="job" class="form-control">
+                <option value="">Todas as categorias</option>
+                @foreach (var job in ViewBag.Jobs as List<Job>)
+                {
+                    if (ViewBag.Job != job.Name)
+                    {
+                        <option value="@job.Name">@job.Name</option>
+                    }
+                    else
+                    {
+                        <option selected value="@job.Name">@job.Name</option>
+                    }
+                }
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
 
-                            @{
-                                var rating = ad.User.Reviews.GetUserRating();
-                                var reviewsCount = ad.User.Reviews.Count;
-
-                                <div class="card-text">
-                                    <strong>Nota:</strong>
-                                    @if (rating == 0)
-                                    {
-                                        <span>Não possui avaliações</span>
-                                    }
-                                    else
-                                    {
-                                        <span>
-                                            @for (int i = 0; i < rating; i++)
-                                            {
-                                                <i class="fa fa-star" style="color: gold; font-size: 25px;">★</i>
-                                            }
-                                            <span class="ml-2">(@reviewsCount)</span>
-                                        </span>
-                                    }
-                                </div>
-                            }
-
-                            <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
-                            <p class="card-text">
-                                @{
-                                    var description = ad.Description.Length > 100
-                                    ? $"{ad.Description.Substring(0, 100)}..."
-                                    : ad.Description;
-                                }
-                                <strong>Descrição:</strong> @description
-                            </p>
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var ad in Model)
+            {
+                <div class="col-md-4 d-flex align-items-stretch">
+                    <div class="card mb-4 shadow-sm" style="width: 100%; height: 500px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="d-flex justify-content-center align-items-center" style="height: 180px; overflow: hidden;">
+                            <img src="@($"data:image/jpeg;base64,{ad.User.Photo}")" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Photo" />
                         </div>
-                        <div class="mt-auto">
-                            <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-secondary">Detalhes</a>
+                        <div class="card-body text-center d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">@ad.User.Name</h5>
+                                <p class="card-text"><strong>Precisa de:</strong> @ad.Job</p>
+                                <hr />
+
+                                @{
+                                    var rating = ad.User.Reviews.GetUserRating();
+                                    var reviewsCount = ad.User.Reviews.Count;
+
+                                    <div class="card-text">
+                                        <strong>Nota:</strong>
+                                        @if (rating == 0)
+                                        {
+                                            <span>Não possui avaliações</span>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                @for (int i = 0; i < rating; i++)
+                                                {
+                                                    <i class="fa fa-star" style="color: gold; font-size: 25px;">★</i>
+                                                }
+                                                <span class="ml-2">(@reviewsCount)</span>
+                                            </span>
+                                        }
+                                    </div>
+                                }
+
+                                <h6 class="card-subtitle mb-2 text-primary">@ad.Title</h6>
+                                <p class="card-text">
+                                    @{
+                                        var description = ad.Description.Length > 100
+                                        ? $"{ad.Description.Substring(0, 100)}..."
+                                        : ad.Description;
+                                    }
+                                    <strong>Descrição:</strong> @description
+                                </p>
+                            </div>
+                            <div class="mt-auto">
+                                <a asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-secondary">Detalhes</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            @if (currentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Clients"
-                       asp-route-page="@(currentPage - 1)">Anterior</a>
-                </li>
             }
-            @for (var i = 1; i <= totalPages; i++)
-            {
-                if (i == currentPage)
-                {
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link">@i</span>
-                    </li>
-                }
-                else
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @if (ViewBag.CurrentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Clients" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@(ViewBag.CurrentPage - 1)">Anterior</a>
                     </li>
                 }
-            }
-            @if (currentPage < totalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Clients"
-                       asp-route-page="@(currentPage + 1)">Próximo</a>
-                </li>
-            }
-        </ul>
-    </nav>
+                @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    if (i == ViewBag.CurrentPage)
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                }
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Clients" asp-route-category="@ViewBag.SelectedCategory" asp-route-page="@(ViewBag.CurrentPage + 1)">Próximo</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <h3 class="text-center">Nenhum anúncio encontrado.</h3>
+    }
 </div>
