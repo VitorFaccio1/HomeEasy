@@ -34,6 +34,7 @@ public class AdsController : Controller
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
         ViewBag.TotalPages = (int)Math.Ceiling(clientsAds.TotalCount / (double)size);
+        ViewBag.UserAvailableAds = await _userService.GetUserAvailableAds(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
         if (rating != 0)
             ViewBag.Rating = rating;
@@ -53,6 +54,7 @@ public class AdsController : Controller
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
         ViewBag.TotalPages = (int)Math.Ceiling(workerAds.TotalCount / (double)size);
+        ViewBag.UserAvailableAds = await _userService.GetUserAvailableAds(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
         if (rating != 0)
             ViewBag.Rating = rating;
@@ -161,6 +163,7 @@ public class AdsController : Controller
 
         var userAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, userId: id);
 
+        ViewBag.UserAvailableAds = await _userService.GetUserAvailableAds(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
         ViewBag.TotalPages = (int)Math.Ceiling(userAds.TotalCount / (double)size);
         ViewBag.CurrentPage = page;
         ViewBag.User = user;
@@ -180,5 +183,19 @@ public class AdsController : Controller
         ViewBag.CurrentPage = page;
 
         return View(userExpiredAds.Ads);
+    }
+
+    public IActionResult Buy()
+    {
+        return Redirect($"https://buy.stripe.com/test_cN2cPGgg32zObss288?prefilled_email={User.FindFirstValue(ClaimTypes.Email)}");
+    }
+
+    public async Task<IActionResult> BuyConfirmed()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.SerialNumber);
+
+        await _userService.SetUserAvailableAds(userId);
+
+        return RedirectToAction(nameof(UserAds), new { Id = userId });
     }
 }
