@@ -24,6 +24,8 @@ namespace HomeEasy.Services
 
             _context.Ads.Add(ad);
 
+            user.AvaiableAds -= 1;
+
             await _context.SaveChangesAsync();
         }
 
