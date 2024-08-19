@@ -64,4 +64,6 @@ public class User
     public UserType Type { get; set; }
 
     public List<Review> Reviews { get; set; } = [];
+
+    public int AvaiableAds { get; set; }
 }
