@@ -49,6 +49,19 @@ public sealed class UserService : IUserService
         .Include(user => user.Reviews)
         .FirstOrDefaultAsync(user => user.Id.ToString() == id);
 
+    public async Task<int> GetUserAvailableAds(string id) =>
+        (await _context.Users
+        .FirstOrDefaultAsync(user => user.Id.ToString() == id))?.AvaiableAds ?? 0;
+
+    public async Task SetUserAvailableAds(string id)
+    {
+        var user = _context.Users.FirstOrDefault(user => user.Id.ToString() == id);
+
+        user.AvaiableAds += 1;
+
+        await _context.SaveChangesAsync();
+    }
+
     public async Task UpdateUserAsync(User user, EditUserModel editUserModel = null)
     {
         if (editUserModel != null)

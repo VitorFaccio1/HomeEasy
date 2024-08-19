@@ -11,4 +11,8 @@ public interface IUserService
     Task<User?> GetUserByIdAsync(string id);
 
     Task UpdateUserAsync(User user, EditUserModel editUserModel = null);
+
+    Task<int> GetUserAvailableAds(string id);
+
+    Task SetUserAvailableAds(string id);
 }
