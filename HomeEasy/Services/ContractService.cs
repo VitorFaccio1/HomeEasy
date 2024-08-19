@@ -21,49 +21,38 @@ public class ContractService : IContractService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Contract>?> GetUserNotCompletedApprovedContractsAsync(string userId)
+    public async Task<(List<Contract> Contracts, int TotalCount)> GetUserContractsFilteredAsync(string userId, int page = 1, int size = 6, bool completed = false, bool approved = false)
     {
-        var contracts = await _context.Contracts
+        var query = _context.Contracts
             .Include(contract => contract.Contractee)
             .Include(contract => contract.Contractor)
             .Include(contract => contract.Ad)
-            .Where(contract =>
-                !contract.Completed && contract.Approved &&
-                (contract.Contractor.Id.ToString() == userId ||
-                contract.Contractee.Id.ToString() == userId))
+            .Where(contract => contract.Contractor.Id.ToString() == userId || contract.Contractee.Id.ToString() == userId);
+
+        if (completed)
+        {
+            query = query.Where(contract => contract.Completed)
+                .OrderBy(contract => contract.Contractee.Id.ToString() == userId ? contract.ContracteeReviewed : contract.ContractorReviewed);
+        }
+        else if (approved)
+        {
+            query = query.Where(contract => contract.Approved && !contract.Completed)
+                .OrderBy(contract => contract.Date);
+        }
+        else
+        {
+            query = query.Where(contract => !contract.Approved && !contract.Completed)
+                .OrderBy(contract => contract.Date);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var contracts = await query
+            .Skip((page - 1) * size)
+            .Take(size)
             .ToListAsync();
 
-        return contracts;
-    }
-
-    public async Task<List<Contract>?> GetUserNotCompletedPendingContractsAsync(string userId)
-    {
-        var contracts = await _context.Contracts
-            .Include(contract => contract.Contractee)
-            .Include(contract => contract.Contractor)
-            .Include(contract => contract.Ad)
-            .Where(contract =>
-                !contract.Completed && !contract.Approved &&
-                (contract.Contractor.Id.ToString() == userId ||
-                contract.Contractee.Id.ToString() == userId))
-            .ToListAsync();
-
-        return contracts;
-    }
-
-    public async Task<List<Contract>?> GetUserCompletedContractsAsync(string userId)
-    {
-        var contracts = await _context.Contracts
-            .Include(contract => contract.Contractee)
-            .Include(contract => contract.Contractor)
-            .Include(contract => contract.Ad)
-            .Where(contract =>
-                contract.Completed &&
-                (contract.Contractor.Id.ToString() == userId ||
-                contract.Contractee.Id.ToString() == userId))
-            .ToListAsync();
-
-        return contracts;
+        return (contracts, totalCount);
     }
 
     public async Task<Contract?> GetContractById(Guid id) =>

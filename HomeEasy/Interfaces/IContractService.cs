@@ -6,11 +6,7 @@ public interface IContractService
 {
     Task CreateAsync(Contract contract);
 
-    Task<List<Contract>?> GetUserNotCompletedApprovedContractsAsync(string userId);
-
-    Task<List<Contract>?> GetUserNotCompletedPendingContractsAsync(string userId);
-
-    Task<List<Contract>?> GetUserCompletedContractsAsync(string userId);
+    Task<(List<Contract> Contracts, int TotalCount)> GetUserContractsFilteredAsync(string userId, int page = 1, int size = 6, bool completed = false, bool approved = false);
 
     Task<Contract?> GetContractById(Guid id);
 
