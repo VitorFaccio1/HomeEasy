@@ -13,6 +13,7 @@ public class Contract
         Ad = ad;
         Contractee = ad.User;
         Contractor = contractor;
+        Date = DateTime.Now;
     }
 
     [Key]
@@ -25,6 +26,8 @@ public class Contract
     public User Contractee { get; set; }
 
     public bool Approved { get; set; }
+
+    public DateTime Date { get; set; }
 
     public bool Completed { get; set; }
 
