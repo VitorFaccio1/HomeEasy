@@ -69,6 +69,8 @@ public class ContractsController : Controller
     {
         var contract = await _contractService.GetContractById(id);
 
+        ViewBag.LoggedUserId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
         return View(contract);
     }
 

@@ -1,7 +1,18 @@
-﻿@model HomeEasy.Models.Contract
+﻿@using HomeEasy.Extensions
+@model HomeEasy.Models.Contract
 
 @{
     ViewData["Title"] = "Detalhes do Contrato";
+
+    var UserLoggedIsContractee = ViewBag.LoggedUserId == Model.Contractee.Id.ToString();
+
+    var message = $"Olá, me chamo {User.Identity.Name}! Tenho interesse no trabalho do seu anúncio no Home Easy de {Model.Ad.Job}, como podemos prosseguir??";
+
+    var phone = UserLoggedIsContractee
+        ? Model.Contractor.Phone
+        : Model.Contractee.Phone;
+
+    var whatsappUrl = $"https://wa.me/{phone.NormalizePhoneNumber()}?text={Uri.EscapeDataString(message)}";
 }
 
 <div class="container mt-5">
@@ -40,7 +51,17 @@
             </div>
         </div>
         <div class="card-footer text-center">
+            <a asp-action="Details" asp-controller="Users"
+               asp-route-id="@(UserLoggedIsContractee ? Model.Contractor.Id : Model.Contractee.Id)" class="btn btn-primary">
+                Ver perfil de @(UserLoggedIsContractee ? Model.Contractor.Name : Model.Contractee.Name)
+            </a>
+            <a href="@whatsappUrl" target="_blank" class="btn btn-success">WhatsApp</a>
             <button onclick="this.disabled=true; history.back()" class="btn btn-secondary mx-2">Voltar</button>
+
+            @if (!Model.Approved)
+            {
+                <a class="btn btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Cancelar</a>
+            }
         </div>
     </div>
 </div>
