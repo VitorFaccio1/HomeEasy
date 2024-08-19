@@ -29,7 +29,7 @@ namespace HomeEasy.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<(List<Ad> Ads, int TotalCount)> GetAdsWithFiltersAsync(UserType userType, int page = 1, int size = 6, string job = "", int rating = 0, bool expired = false, string userId = "")
+        public async Task<(List<Ad> Ads, int TotalCount)> GetAdsFilteredAsync(UserType userType, int page = 1, int size = 6, string job = "", int rating = 0, bool expired = false, string userId = "")
         {
             var query = FilterAdsQuery(job, rating, expired, userType, userId);
 

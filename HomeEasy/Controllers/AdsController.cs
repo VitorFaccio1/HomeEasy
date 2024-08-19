@@ -29,7 +29,7 @@ public class AdsController : Controller
     {
         var size = 3;
 
-        var clientsAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, job, rating);
+        var clientsAds = await _adService.GetAdsFilteredAsync(UserType.Client, page, size, job, rating);
 
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
@@ -49,7 +49,7 @@ public class AdsController : Controller
     {
         var size = 3;
 
-        var workerAds = await _adService.GetAdsWithFiltersAsync(UserType.Worker, page, size, job, rating);
+        var workerAds = await _adService.GetAdsFilteredAsync(UserType.Worker, page, size, job, rating);
 
         ViewBag.CurrentPage = page;
         ViewBag.Jobs = await _jobService.GetJobsAsync();
@@ -161,7 +161,7 @@ public class AdsController : Controller
 
         var user = await _userService.GetUserByIdAsync(id);
 
-        var userAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, userId: id);
+        var userAds = await _adService.GetAdsFilteredAsync(UserType.Client, page, size, userId: id);
 
         ViewBag.UserAvailableAds = await _userService.GetUserAvailableAds(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
         ViewBag.TotalPages = (int)Math.Ceiling(userAds.TotalCount / (double)size);
@@ -177,7 +177,7 @@ public class AdsController : Controller
 
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var userExpiredAds = await _adService.GetAdsWithFiltersAsync(UserType.Client, page, size, expired: true, userId: userId);
+        var userExpiredAds = await _adService.GetAdsFilteredAsync(UserType.Client, page, size, expired: true, userId: userId);
 
         ViewBag.TotalPages = (int)Math.Ceiling(userExpiredAds.TotalCount / (double)size);
         ViewBag.CurrentPage = page;
