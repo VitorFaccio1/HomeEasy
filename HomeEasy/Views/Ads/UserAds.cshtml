@@ -15,9 +15,18 @@
     <h1 class="text-center mb-4">@ViewData["Title"]</h1>
     @if (userAccount)
     {
-        <div class="text-center mb-4">
-            <a asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
-        </div>
+        if (ViewBag.UserAvailableAds > 0)
+        {
+            <div class="text-center mb-4">
+                <a asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
+            </div>
+        }
+        else
+        {
+            <div class="text-center mb-4">
+                <a asp-action="Buy" class="btn btn-primary">Comprar anúncio</a>
+            </div>
+        }
     }
     @if (Model.Any())
     {

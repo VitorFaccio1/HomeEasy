@@ -14,9 +14,18 @@
 
     @if (User.IsInRole(UserType.Worker.GetDescription()))
     {
-        <div class="text-center mb-4">
-            <a asp-controller="Ads" asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
-        </div>
+        if (ViewBag.UserAvailableAds > 0)
+        {
+            <div class="text-center mb-4">
+                <a asp-action="Create" class="btn btn-primary">Fazer anúncio</a>
+            </div>
+        }
+        else
+        {
+            <div class="text-center mb-4">
+                <a asp-action="Buy" class="btn btn-primary">Comprar anúncio</a>
+            </div>
+        }
     }
 
     <form asp-action="Workers" class="mb-4">
