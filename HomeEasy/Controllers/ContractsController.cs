@@ -38,31 +38,46 @@ public class ContractsController : Controller
         return RedirectToAction(nameof(Pendings));
     }
 
-    public async Task<IActionResult> Approveds()
+    public async Task<IActionResult> Approveds(int page = 1)
     {
+        var size = 3;
+
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var contracts = await _contractService.GetUserNotCompletedApprovedContractsAsync(userId);
+        var contracts = await _contractService.GetUserContractsFilteredAsync(userId, page, size, approved: true);
 
-        return View(contracts);
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(contracts.TotalCount / (double)size);
+
+        return View(contracts.Contracts);
     }
 
-    public async Task<IActionResult> Pendings()
+    public async Task<IActionResult> Pendings(int page = 1)
     {
+        var size = 3;
+
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var contracts = await _contractService.GetUserNotCompletedPendingContractsAsync(userId);
+        var contracts = await _contractService.GetUserContractsFilteredAsync(userId, page, size);
 
-        return View(contracts);
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(contracts.TotalCount / (double)size);
+
+        return View(contracts.Contracts);
     }
 
-    public async Task<IActionResult> Completeds()
+    public async Task<IActionResult> Completeds(int page = 1)
     {
+        var size = 3;
+
         var userId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
 
-        var contracts = await _contractService.GetUserCompletedContractsAsync(userId);
+        var contracts = await _contractService.GetUserContractsFilteredAsync(userId, page, size, completed: true);
 
-        return View(contracts);
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(contracts.TotalCount / (double)size);
+
+        return View(contracts.Contracts);
     }
 
     public async Task<IActionResult> Details(Guid id)
