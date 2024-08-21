@@ -76,9 +76,18 @@ public class AdsController : Controller
 
     public async Task<IActionResult> Create()
     {
-        ViewBag.Jobs = await _jobService.GetJobsAsync();
+        var user = await _userService.GetUserByIdAsync(User.FindFirst(ClaimTypes.SerialNumber)?.Value);
 
-        return View();
+        if (user.AvaiableAds > 0)
+        {
+            ViewBag.Jobs = await _jobService.GetJobsAsync();
+
+            return View();
+        }
+        else
+        {
+            return RedirectToAction(nameof(Buy));
+        }
     }
 
     [HttpPost]
